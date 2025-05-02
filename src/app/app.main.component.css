@@ -1,0 +1,31 @@
+.layout-menu-collapsed{
+    left: 260px!important;
+    transition: 1s ease-in-out;
+}
+
+.personaje {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    padding-top: 10px;
+    color: #fff;
+    line-height: 20px;
+    text-align: center;
+    background: #002c7f;
+    display: inline-block;
+}
+
+
+.menu-toggle {
+    color: white !important
+}
+.scrollable-container{
+  overflow: auto;
+}
+.text-body{
+  width: 100%;
+  padding:0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}

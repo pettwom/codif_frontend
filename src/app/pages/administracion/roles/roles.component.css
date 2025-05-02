@@ -1,0 +1,10 @@
+.contenedor{
+  background-color: rgba(71, 135, 74,.2);
+  padding: 7px;
+  border-radius: 10px;
+}
+
+.contenedor h6{
+  color:#47874a;
+}
+

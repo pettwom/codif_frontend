@@ -1,0 +1,76 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3d mb-4">
+    <span class="text-muted fw-light">Inicio /</span>
+    Notificacines
+  </h4>
+</div>
+
+<div class="row">
+  <div class="card">
+    <div class="card-header">
+      <h3>Adicionar Notificación</h3>
+    </div>
+    <div class="card-body" style="display: flex; gap: 1em; flex-wrap: wrap;">
+      <div class="contenedor_user">
+        <div class="form-floating form-floating-outline">
+          <select [(ngModel)]="userId" class="form-select select_user" id="select2" style="width: 100%; height: 445%;"
+             aria-label="Floating label select example">
+            <option>== Seleccionar Usuario ==</option> <!-- Para permitir que funcione `allowClear` -->
+            <option *ngFor="let a of listUser" value="{{a.id_usuario}}">{{a.nombres}}</option>
+          </select>
+          <label for="floatingSelect">Seleccionar Usuario</label>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text"><i class="fa-solid fa-font"></i></span>
+          <div class="form-floating form-floating-outline">
+            <input type="text" class="form-control" id="basic-addon11" placeholder="John Doe" aria-label="Username"
+            [(ngModel)]="titleNoti"  aria-describedby="basic-addon11">
+            <label for="basic-addon11">Titulo</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text"><i class="fa-solid fa-comments"></i></span>
+          <div class="form-floating form-floating-outline">
+            <textarea class="form-control h-px-75" aria-label="With textarea"
+              [(ngModel)]="commnetsNoti" placeholder="Coloque aqui su comentario..."></textarea>
+            <label>Comentario</label>
+          </div>
+        </div>
+      </div>
+
+      
+      
+        <div style="display: flex; gap: 1rem; vertical-align: middle; width: 100%!important;">
+          <div style="width: 20% ;  ">
+            <div class="form-check form-switch mb-2" style="display: inline-block;
+            margin-left: 20%;
+            margin-top: 10px;">
+              <input (change)="verificarTiempo()" [(ngModel)]="switchNoti" class="form-check-input switch switch-lg" type="checkbox" id="flexSwitchCheckChecked" checked="">
+              <label class="form-check-label" for="flexSwitchCheckChecked">Tiempo Límite??</label>
+            </div>
+          </div>
+          <div style="width: 70%; ">
+            <div class="input-group input-group-merge">
+              <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+              <div class="form-floating form-floating-outline">
+                <input [(ngModel)]="fechaFin" [disabled]="disabledFF" type="date" class="form-control" id="fecha_fin" placeholder="John Doe" aria-label="Username"
+                  aria-describedby="basic-addon11">
+                <label for="basic-addon11">Fecha Final</label>
+              </div>
+            </div>
+          </div>
+      </div>
+      <br>
+      <br>
+      <hr>
+      <br>
+      <button class="btn btn-primary" (click)="almacenarNoti()">
+        <i class="fa-regular fa-floppy-disk"></i>&nbsp;&nbsp;Almacenar
+      </button>
+    </div>
+  </div>
+</div>

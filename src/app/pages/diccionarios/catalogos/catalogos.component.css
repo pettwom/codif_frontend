@@ -1,0 +1,31 @@
+.right-div{
+  text-align: right;
+  margin:10px;
+  margin-right: 20px
+}
+.contenedor-campos{
+  margin: 10px;
+  padding: 15px;
+}
+
+
+.div:where(.swal2-container) {
+  z-index: 9999 !important; /* Asegúrate de que este valor sea mayor que el del p-dialog */
+
+}
+.nav-item{
+  background-color: #fff;
+  border-radius: 10px; 
+  margin: 20px 5px;
+}
+.nav-item:hover{
+  box-shadow: 3px 1px 1px rgba(0,0,0,.1); 
+  background-color:rgb(138, 182, 65,.2);
+  transition: all .5s ease-out;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-link.active:focus .nav-item:focus{
+  box-shadow: 3px 1px 1px rgba(0,0,0,.1); 
+  border-radius: 10px; 
+  background-color:rgb(138, 182, 65,.2);
+  transition: all .5s ease-out;
+}

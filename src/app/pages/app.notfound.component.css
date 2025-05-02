@@ -1,0 +1,123 @@
+/* ==========================================================================
+   Base Styles - ! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ 
+   ========================================================================== */
+
+   html,
+   body {
+     width: 100%;
+     height: 100%;
+     margin: 0;
+     padding: 0;
+   }
+   
+   ::-moz-selection {
+     background: #b3d4fc;
+     text-shadow: none;
+   }
+   
+   ::selection {
+     background: #b3d4fc;
+     text-shadow: none;
+   }
+   
+   a{
+     color: #4384F5;
+     text-decoration: none;
+   }
+   
+   a:hover{
+     opacity: 0.8;
+   }
+   
+   svg {
+     vertical-align: middle;
+   }
+   
+   
+   /* ==========================================================================
+      Main Styles
+      ========================================================================== */
+   
+   .container {
+     display: table;
+     font-family: 'Open Sans', sans-serif;
+     height: 100%;
+     width: 100%;
+     background: #fff;
+   }
+   
+   .content{
+     display: table-cell;
+     font-size: 22px;
+     text-align: center;
+     vertical-align: middle;
+     padding: 40px 30px;
+   }
+   
+   .inner-wrapper{
+     display: inline-block;
+   }
+   
+   .top-title{
+     color: #4384F5;
+     font-size: 35px;
+     font-weight: 700;
+     margin-bottom: 25px;
+   }
+   
+   .main-title{
+     line-height: 0;
+     font-size: 90px;
+     font-weight: 800;
+     color: #4384F5;
+   }
+   
+   .svg-wrap{
+     display: inline-block;
+     font-size: 0;
+     vertical-align: super;
+   }
+   
+   #lego{
+     padding: 5px;
+   }
+   
+   .blurb{
+     margin-top: 30px;
+     color: #B6BECC;
+   }
+   
+   .lego-btn{
+     background: #4384F5;
+     border-radius: 4px;
+     color: #fff;
+     display: inline-block;
+     margin-top: 30px;
+     padding: 12px 25px;
+   }
+   
+   /* ==========================================================================
+      Media Queries
+      ========================================================================== */
+   
+   
+   
+   @media only screen and (max-width: 440px){
+   
+     .main-title{
+       font-size: 60px;
+     }
+   
+     #lego{
+       width: 50px;
+       height: 55px;
+       padding: 10px 5px;
+     }
+     
+     .blurb,
+     .lego-btn{
+       font-size: 18px;
+     }
+   
+   
+   }

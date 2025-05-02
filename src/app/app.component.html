@@ -1,0 +1,9 @@
+<div *ngIf="loading$ | async" class="loading-overlay">
+  <!-- <div class="spinner"></div> -->
+  <div class="contenedor-modal">
+    <span class="cargando"></span>
+    <span> Espere por favor </span><br />
+    <span class="loader"></span>
+  </div>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,143 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3d mb-4">
+    <span class="text-muted fw-light">
+      Inicio / Administracion
+    </span>
+    / Roles - funciones
+  </h4>
+</div>
+<div class="row">
+  <div class="card">
+    <div class="card-header">
+      <h4>
+        <i class="fa-solid fa-person-digging"></i>&nbsp;
+        Funciones a realizar en el Sistema
+      </h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-6">
+          <div class="">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="bg-label-info rounded-3 text-center mb-3 pt-4">
+                  <img class="img-fluid" src="../../assets/img/illustrations/card-ratings-illustration.png"
+                    alt="Boy card image" width="130">
+                </div>
+                <div class="row mb-3 g-3">
+                  <div class="col-6">
+                    <div class="d-flex">
+                      <div class="avatar flex-shrink-0 me-2">
+                        <span class="avatar-initial rounded bg-label-primary">
+                          <!-- <i  class="mdi mdi-calendar-alert mdi-24px"></i> -->
+                          <i class="fa-solid fa-user-tie"></i>
+                        </span>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 text-nowrap">Nombre:</h6>
+                        <small>{{users[0].nombres}}</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="d-flex">
+                      <div class="avatar flex-shrink-0 me-2">
+                        <span class="avatar-initial rounded bg-label-primary">
+                          <!-- <i class="mdi mdi-clock-time-four-outline mdi-24px"></i> -->
+                          <i class="fa-solid fa-person-walking-luggage"></i>
+                        </span>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 text-nowrap">Cargo</h6>
+                        <small>{{users[0].rol}}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-body">
+              <div class=" d-flex">
+                <div class="avatar flex-shrink-0 me-2">
+                  <span class="avatar-initial rounded bg-label-primary">
+                    <i class="fa-solid fa-circle-question"></i>
+                  </span>
+                </div> &nbsp;Que Rol se desea Asignar ?
+              </div>
+              <hr>
+              <div class="col-3" *ngFor="let a of listRoles">
+                <div class="form-check form-check-info">
+                  <input name="customRadioInfo" [(ngModel)]="rol_input" class="form-check-input" type="radio"
+                    value="{{a.id_rol}}" id="{{a.id_rol}}" checked="false">
+                  <label class="form-check-label" for="customRadioInfo"> {{a.rol}} </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-hover table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre Completo</th>
+              <th>C.I.</th>
+              <th>Rol</th>
+              <th>Turno</th>
+              <th>
+                <div class="form-check ">
+                  <label class="form-check-label" for="defaultCheck1">
+                    <input type="checkbox" class="form-check-input" (change)="selectAll($event)" />
+                    <i class="fa-solid fa-check-double"></i>
+                    Seleccionar
+                  </label>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of listUser">
+              <td>{{a.nro}}</td>
+              <td>{{a.nombres}}</td>
+              <td>{{a.aut_us_ci}}</td>
+              <td>{{a.rol}}</td>
+              <td>
+                <div class="form-floating form-floating-outline mb-4">
+                  <select class="form-select" id="turno" aria-label="Default select example">
+                    <option disabled value="">== Seleccionar ==</option>
+                    <option value="m">Mañana</option>
+                    <option value="t">Tarde</option>
+                  </select>
+                  <label for="turno">Seleccionar Turno</label>
+                </div>
+              </td>
+              <td>
+                <div class="form-check mt-3" *ngIf="a.estado_id != 2 && a.estado_id !=3">
+                  <input type="checkbox" class="form-check-input" [(ngModel)]="a.selected"
+                    (change)="onSelectRow(a, i)" />
+                  <label class="form-check-label" for="defaultCheck1"></label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-5">
+          <button class="btn btn-info" pTooltip="Actualizar Rol" tooltipPosition="top">
+            <i class="fa fa-save"></i> &nbsp; Almacenar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

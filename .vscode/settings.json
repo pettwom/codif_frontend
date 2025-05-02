@@ -1,0 +1,29 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#43bea4",
+        "activityBar.background": "#43bea4",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#a342bd",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#43bea4",
+        "statusBar.background": "#359a84",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#43bea4",
+        "statusBarItem.remoteBackground": "#359a84",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#359a84",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#359a8499",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#359a84",
+    "cSpell.words": [
+        "Continuar",
+        "obtener",
+        "Swal",
+        "unico",
+        "Usuario"
+    ]
+}

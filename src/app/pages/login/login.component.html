@@ -1,0 +1,202 @@
+<style>
+  .mensajes-error span {
+    color: rgb(247 244 244);
+    background: #e99898;
+    padding: 3px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 11px;
+  }
+
+  .color_verde {
+    color: #2d73a2;
+  }
+</style>
+
+<!-- <div class="contador">
+  <h3>ddddddddddddddddd</h3>fdsdfgsdf
+</div> -->
+
+
+<!-- Content -->
+<div class="authentication-wrapper authentication-cover">
+  <div class="authentication-inner row m-0" style="    display: flex
+  ;
+      align-items: center;">
+
+    <!-- /Left Section -->
+    <div
+      style="background: url(assets/fondo_agro.jpg) ;background-size: cover;     position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;">
+
+      <!-- <div class="mt-auto mb-auto recuadro_login" style="font-size: 2.3em;">
+        <span class="block text-white text-7xl font-semibold">
+
+          <div class="animacion" style="font-weight: 800;">
+            <div>CENSO &nbsp;</div>
+            <div>
+              <span> AGROPECUARIO 2025 </span>
+            </div>
+          </div>
+        </span>
+        <span class="block text-white mt-4">
+          "El Censo Agropecuario es un procedimiento exhaustivo de recolección de datos del sector agropecuario, el cual permite tener un mejor conocimiento de la realidad agrícola, cría de ganado o aves, recursos forestales, recolección o extracción de especies maderables y no maderables, caza y pesca, en un período de referencia determinado, con la finalidad de facilitar la formulación y diseño de políticas, programas y proyectos para el desarrollo sostenible del sector agropecuario"
+        </span>
+      </div> -->
+
+    </div>
+    <!-- /Left Section -->
+
+    <!-- Login -->
+    <!-- class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg position-relative py-sm-5 px-4 py-4"> -->
+    <div style="position: absolute;width: 100%;margin: auto;display: flex;justify-content: center;vertical-align: middle; color: #fff; ">
+      <div class="circuloLogin">
+       <img src="assets/login.png" alt="">
+      </div>
+      <div class="login_content" style="border: 1px solid rbga(0,0,0,.3); box-shadow: 5px 10px 10px rgba(0,0,0,.8); border-radius: 10px; padding:40px; background-color: rgba(0,0,0,.5); display: flex; ">
+        <div style="display: flex;
+            flex-direction: column-reverse;
+            margin: 10px;
+            border-right: 1px solid #ccc;
+            padding-right: 30px;
+            margin-right: 30px;
+            text-align: center;
+            align-items: center;">
+          <h4 class="mb-2" style="text-align: center;color: #fff;">⚡ Bienvenido a CODORNIZ ⚡ <br><br>
+            Sistema de Codificación
+          </h4><br>
+          <img src="assets/images/logo.png" alt="logo cpv" width="250" class="logo_cpv">
+        </div>
+        <!-- <br> -->
+        <!-- <p class="mb-4">Por favor Ingrese los datos para iniciar sesión</p> -->
+
+        <form [formGroup]="form_login" (ngSubmit)="onSubmit()" style="    border-radius: 10px;
+        padding: 20PX;
+        background: #fff;
+        box-shadow: inset 0px 0px 3px 5px rgba(0, 0, 0, .2);">
+          <div class="form-floating form-floating-outline mb-3">
+            <input type="text" class="form-control" id="usuario" formControlName="usuario" name="usuario"
+              placeholder="Introducir Usuario" autofocus />
+            <label for="usuario">Usuario</label>
+            <div class="mensajes-error">
+              <span *ngIf="this.form_login.get('usuario')?.errors?.['required']">
+                La contraseña no puede tener valor vacio
+              </span>
+              <span *ngIf="this.form_login.get('usuario')?.errors?.['minLength']">
+                La contraseña debe tener al menos 8 caracteres
+              </span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-password-toggle">
+              <div class="input-group input-group-merge">
+                <div class="form-floating form-floating-outline">
+                  <input type="password" id="password" (keypress)="teclado()" class="password form-control"
+                    formControlName="password" name="password"
+                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                    aria-describedby="password" />
+                  <label for="password">Contraseña</label>
+                </div>
+                <span class="input-group-text cursor-pointer">
+                  <i [class]="icon_pass" id="eyes_icon" (click)="eyes_passw('eyes_icon', 'password','pass')"></i>
+                </span>
+              </div>
+
+            </div>
+            <div class="mensajes-error">
+              <span *ngIf="this.form_login.get('password')?.errors?.['required']">
+                La contraseña no puede tener valor vacio
+              </span>
+              <span *ngIf="this.form_login.get('password')?.errors?.['minLength']">
+                La contraseña debe tener al menos 8 caracteres
+              </span>
+            </div>
+          </div>
+          <hr>
+          <div class="mb-3 d-flex justify-content-between">
+            <!-- <div class="form-check">
+              <input class="form-check-input" type="checkbox" formControlName="recordarme" id="recordarme" />
+              <label class="form-check-label" for="recordarme"> Recordarme </label>
+            </div> -->
+            <!-- <a href="auth-forgot-password-cover.html" class="float-end mb-1" data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd">
+              <span>Olvido su contraseña?</span>
+            </a> -->
+          </div>
+
+          <button type="submit" class="btn btn-success d-grid w-100 waves-effect waves-light">
+            {{botonTexto}}
+          </button>
+        </form>
+
+        <form [formGroup]="formReset">
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd" aria-labelledby="offcanvasEndLabel">
+            <div class="offcanvas-header">
+              <h5 id="offcanvasEndLabel" class="offcanvas-title">Resetear contraseña</h5>
+              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+              <div style="display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 80px; ">
+                <img src="assets/images/restablecer-contrasena.png" alt="repetir contraseña" width="180">
+              </div>
+
+              <div class="form-floating form-floating-outline mb-3">
+                <input type="text" class="form-control" id="ci" formControlName="ci" name="ci"
+                  placeholder="Introducir Carnet de Identidad" autofocus />
+                <label for="ci">Carnet de Identidad</label>
+                <div class="mensajes-error">
+                  <span *ngIf="this.form_login.get('ci')?.errors?.['required']">
+                    El Carnet de Identidad no puede tener valor vacio
+                  </span>
+                </div>
+              </div>
+
+
+              <div class="input-group input-group-merge  mb-3">
+                <div class="form-floating form-floating-outline">
+                  <input type="password" id="pass_new" class="form-control" formControlName="pass_new" name="pass_new"
+                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                    aria-describedby="pass_new" />
+                  <label for="pass_new">Nueva Contraseña</label>
+                </div>
+                <span class="input-group-text cursor-pointer">
+                  <i [class]="icon_new" id="eyes_icon_new" (click)="eyes_passw('eyes_icon_new', 'pass_new','new')"></i>
+                </span>
+              </div>
+
+
+              <div class="input-group input-group-merge mb-3">
+                <div class="form-floating form-floating-outline">
+                  <input type="password" id="repeat_pass" class="form-control" formControlName="repeat_pass"
+                    name="repeat_pass"
+                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                    aria-describedby="repeat_pass" />
+                  <label for="repeat_pass">Repetir Contraseña</label>
+                </div>
+                <span class="input-group-text cursor-pointer">
+                  <i [class]="icon_repeat" id="eyes_icon_repeat"
+                    (click)="eyes_passw('eyes_icon_repeat', 'repeat_pass','repeat')"></i>
+                </span>
+              </div>
+
+              <button type="submit" class="btn btn-primary mb-2 d-grid w-100  waves-effect waves-light"
+                (click)="resetearPassword()">Actualizar</button>
+              <button type="button" class="btn btn-outline-secondary d-grid w-100 waves-effect waves-light"
+                data-bs-dismiss="offcanvas">
+                Cancelar
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <!-- /Login -->
+  </div>
+</div>
+
+<!-- / Content -->

@@ -1,0 +1,165 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3d mb-4">
+    <span class="text-muted fw-light">
+      Inicio
+    </span>
+    / Frecuencias
+  </h4>
+</div>
+<div class="row">
+  <div class="card">
+    <div class="card-header">
+      <h4>
+        <i class="fa fa-regular fa-chart-bar"></i> &nbsp;
+        Frecuencias
+      </h4>
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-floating form-floating-outline">
+            <select class="form-select" id="deptoSel" [(ngModel)]="deptoModel" (change)="getMpio()"
+              aria-label="Floating label select example">
+              <option value="" selected disabled>== Departamento ==</option>
+              <option *ngFor="let a of deptoOption" value="{{a.cod_depto}}">{{a.depto}}</option>
+            </select>
+            <label for="floatingSelect">Departamento</label>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-floating form-floating-outline">
+            <select class="form-select" id="mpioSel" [(ngModel)]="mpioModel" (change)="getAg()"
+              aria-label="Floating label select example">
+              <option value="" selected disabled>== Municipio ==</option>
+              <option *ngFor="let a of (mpioResult|| [])" value="{{a.cod_mpio}}">{{a.mpio}}</option>
+            </select>
+            <label for="floatingSelect">Municipio</label>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-floating form-floating-outline">
+            <select class="form-select" id="agSel" [(ngModel)]="agModel" (change)="getAe()"
+              aria-label="Floating label select example">
+              <option value="" selected disabled>== Área Agropecuaria ==</option>
+              <option *ngFor="let a of agResult" value="{{a.ag_unico}}">{{a.ag_unico}}</option>
+            </select>
+            <label for="floatingSelect">Área Agropecuaria</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-floating form-floating-outline">
+            <select class="form-select" id="aeSel" [(ngModel)]="aeModel" aria-label="Floating label select example">
+              <option value="" selected disabled>== Área Enumerada ==</option>
+              <option *ngFor="let a of aeResult" value="{{a.ae_unico}}">{{a.ae_unico}}</option>
+            </select>
+            <label for="floatingSelect">Área Enumerada</label>
+          </div>
+        </div>
+        <hr>
+        <button class="btn btn-success" [disabled]="disabledButton?true:false" (click)="searchFre()"> <i
+            class="fa fa-search"></i>&nbsp; Buscar</button>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" *ngIf="resultado.length > 1"
+          class="table table-hover table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Departamento</th>
+              <th>Municipio</th>
+              <th>Área Agropecuaria</th>
+              <th>Área Enumerada</th>
+              <th>Respuesta</th>
+              <th>Cantidad</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of resultado">
+              <td>{{a.depto}}</td>
+              <td>{{a.mpio}}</td>
+              <td>{{a.ae_unico}}</td>
+              <td>{{a.ag_unico}}</td>
+              <td>{{a.respuesta}}</td>
+              <td>{{a.cant}}</td>
+              <td>
+                <button class="btn btn-info" (click)="modalCatalogo(a.respuesta)" pTooltip="Agregar a la lista de Catálogos" tooltipPosition="top">
+                  <i class="fa-regular fa-square-plus"></i>&nbsp;
+                  Agregar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<p-dialog [header]="tituloHeader" [(visible)]="displayCatalogo" [modal]="true" [closable]="true"
+  [style]="{width: '600px'}" [maximizable]="true" [contentStyle]="{ 'overflow': 'auto', 'z-index':'999'}">
+  <hr>
+  <div class="container">
+    <div class="row">
+      <div class="col-4">
+        <div class="form-floating form-floating-outline">
+          <select class="form-select" id="floatingSelect" [(ngModel)]="cat_cuest_model"
+            aria-label="Floating label select example">
+            <option disabled="true" value="">== Seleccionar ==</option>
+            <option value="UPA">UPA</option>
+            <option value="COMUNAL">COMUNAL</option>
+          </select>
+          <label for="floatingSelect">Categoria Cuest.</label>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text"><i class="fa-solid fa-audio-description"></i></span>
+          <div class="form-floating form-floating-outline">
+            <input type="text" class="form-control" id="basic-addon11" [(ngModel)]="desc_cat_model"
+            placeholder="Comenta aqui ..." aria-label="Username"
+              aria-describedby="basic-addon11">
+            <label for="basic-addon11">Descripción Categoria</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-6">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
+          <div class="form-floating form-floating-outline">
+            <input type="text" class="form-control" id="basic-addon11" [(ngModel)]="catalogo_model"
+            placeholder="Comenta aqui ..." aria-label="Username"
+              aria-describedby="basic-addon11">
+            <label for="basic-addon11">Catálogo</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text"><i class="fa-solid fa-code"></i></span>
+          <div class="form-floating form-floating-outline">
+            <input type="text" class="form-control" id="basic-addon11" [(ngModel)]="codigo_model"
+            placeholder="Comenta aqui ..." aria-label="Username"
+              aria-describedby="basic-addon11">
+            <label for="basic-addon11">Código</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="col-4">
+      <button class="btn btn-warning" pTooltip="Almacenar Catálogo" tooltipPosition="top"
+      (click)="saveCatalogo()">
+        <i class="fa fa-save"></i>&nbsp;
+        Almacenar
+      </button>
+    </div>
+  </div>
+</p-dialog>

@@ -1,0 +1,157 @@
+.card {
+  margin-bottom: 25px;
+}
+.caja {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  /* height: 50px; */
+  padding: 20px;
+  margin: 20px 0;
+  margin: 20px 0;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  /* display: flex !important;
+  justify-content: center;
+  flex-wrap: wrap; */
+  transition: all ease-in-out 0.5s;
+}
+.caja:hover {
+  transform: scale(1.1);
+  cursor: not-allowed;
+}
+.conContrato {
+  background: rgb(71, 135, 74);
+  background: linear-gradient(
+    143deg,
+    rgba(71, 135, 74, 1) 0%,
+    rgba(71, 135, 74, 1) 35%,
+    rgba(71, 100, 135, 1) 100%
+  );
+}
+.sinContrato {
+  background: rgb(71, 100, 135);
+  background: linear-gradient(
+    143deg,
+    rgba(71, 100, 135, 1) 0%,
+    rgba(71, 100, 135, 1) 35%,
+    rgba(135, 71, 132, 1) 100%
+  );
+}
+.total {
+  background: rgb(135, 71, 132);
+  background: linear-gradient(
+    143deg,
+    rgba(135, 71, 132, 1) 0%,
+    rgba(135, 71, 132, 1) 35%,
+    rgba(135, 106, 71, 1) 100%
+  );
+}
+
+.titulo {
+  display: inline;
+  clear: both;
+  width: 100%;
+  font-weight: 700;
+  font-size: 20px;
+}
+.porcentaje {
+  font-size: 50px;
+  display: inline;
+  clear: both;
+  width: 40%;
+  transition: all 0.5s ease;
+  text-shadow: 3px 7px 7px rgba(8, 8, 8, 0.8);
+}
+.contenedor_datos {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.cantidad {
+  font-size: 25px;
+  width: 40%;
+  display: block;
+  align-content: end;
+  margin-bottom: 10px;
+}
+.grafico {
+  width: 20%;
+}
+
+.mdi::before,
+.mdi-set {
+  font-size: 70px !important;
+}
+.contenedor_prof {
+  /* border: 1px solid red; */
+  /* display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0; */
+}
+.cajas_prof {
+  border: 1px solid #ccc;
+  margin: 10px 5px;
+  /* width: 49%; */
+  height: 144px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  transition: all ease-in-out 0.5s;
+  display: flex;
+}
+.cajas_prof:hover {
+  transform: scale(1.1);
+}
+
+.cajas_prof img {
+  padding: 0;
+  margin: 0 15px;
+}
+.prof {
+  background: rgb(92, 119, 95);
+  background: linear-gradient(
+    143deg,
+    rgba(92, 119, 95, 1) 0%,
+    rgba(92, 119, 95, 1) 49%,
+    rgba(159, 166, 96, 1) 100%
+  );
+
+}
+.titulo_prof {
+  display: inline-block;;
+  font-size: 25px;
+  font-weight: 700;
+  margin: 10px 20px;
+}
+.grad {
+  background: rgb(137, 143, 83);
+  background: linear-gradient(
+    143deg,
+    rgba(137, 143, 83, 1) 0%,
+    rgba(137, 143, 83, 1) 58%,
+    rgba(118, 83, 143, 1) 100%
+  );
+}
+
+.textLabel {
+  display: table;
+  font-size: 21px;
+  font-weight: 100;
+  margin: auto;
+}
+.cont_texto{
+  display: inline-block;
+  width: 70%;
+}
+.img_prof{
+  position: relative;
+  right: -20px;
+  height: 165px;
+}
+.img_grad{
+  position: relative;
+  right: -19px;
+  height: 135px;
+}
