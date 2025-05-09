@@ -1,0 +1,895 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Inicio / Administración</span>
+    / Gestión de Roles de Asignación
+  </h4>
+
+  <!-- Tarjeta principal -->
+  <div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center py-3">
+      <h5 class="mb-0">
+        <i class="fa-solid fa-users-gear me-2"></i>
+        Asignación de Roles
+      </h5>
+      <!--      <button class="btn btn-primary" (click)="abrirModalAsignacionMasiva()">-->
+      <!--        <i class="fa-solid fa-users-rectangle me-2"></i>-->
+      <!--        Asignación masiva-->
+      <!--      </button>-->
+    </div>
+
+    <div class="card-body">
+      <!-- Barra de búsqueda rápida y botones -->
+<!--      winter-->
+<!--      <div class="row mb-3">-->
+<!--        <div class="col-md-6">-->
+<!--          <div class="input-group">-->
+<!--            <span class="input-group-text"><i class="fa-solid fa-search"></i></span>-->
+<!--            <input type="text" class="form-control" placeholder="Buscar usuario..."-->
+<!--                   [(ngModel)]="textoFiltro" (keyup.enter)="aplicarFiltros()">-->
+<!--            <button class="btn btn-primary" (click)="aplicarFiltros()">-->
+<!--              <i class="fa-solid fa-search me-1"></i>Buscar-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-md-6 d-flex justify-content-end">-->
+<!--          <div class="btn-group">-->
+<!--            <button class="btn btn-outline-primary" (click)="togglePanelFiltros()">-->
+<!--              <i class="fa-solid fa-sliders me-1"></i>Filtros avanzados-->
+<!--            </button>-->
+<!--            <button class="btn btn-outline-success" (click)="abrirModalAsignacionMasiva()">-->
+<!--              <i class="fa-solid fa-users-rectangle me-1"></i>Asignación masiva-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <!-- Panel de filtros colapsable -->
+<!--      <div class="card shadow-sm mb-4" id="panelFiltros" style="display: none;">-->
+<!--        <div class="card-body">-->
+<!--          <div class="d-flex justify-content-between align-items-center mb-3">-->
+<!--            <h6 class="mb-0"><i class="fa-solid fa-filter me-2"></i>Filtros avanzados</h6>-->
+<!--            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limpiarFiltros()">-->
+<!--              <i class="fa-solid fa-eraser me-1"></i>Limpiar filtros-->
+<!--            </button>-->
+<!--          </div>-->
+
+<!--          <div class="row">-->
+<!--            <div class="col-md-4 mb-3">-->
+<!--              <label class="form-label">Buscar por texto</label>-->
+<!--              <div class="input-group">-->
+<!--                <span class="input-group-text"><i class="fa-solid fa-search"></i></span>-->
+<!--                <input type="text" class="form-control" placeholder="Nombre, CI o usuario"-->
+<!--                       [(ngModel)]="textoFiltro" (keyup.enter)="aplicarFiltros()">-->
+<!--              </div>-->
+<!--              <small class="text-muted">Busca en nombre, apellidos, CI y usuario</small>-->
+<!--            </div>-->
+
+<!--            <div class="col-md-4 mb-3">-->
+<!--              <label class="form-label">Filtrar por rol</label>-->
+<!--              <select class="form-select" [(ngModel)]="rolFiltro" (change)="aplicarFiltros()">-->
+<!--                <option value="">Todos los roles</option>-->
+<!--                <option *ngFor="let rol of filtrosDisponibles.roles" [value]="rol">{{rol}}</option>-->
+<!--              </select>-->
+<!--            </div>-->
+
+<!--            <div class="col-md-4 mb-3">-->
+<!--              <label class="form-label">Estado</label>-->
+<!--              <select class="form-select" [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">-->
+<!--                <option value="">Todos</option>-->
+<!--                <option value="activo">Activos</option>-->
+<!--                <option value="inactivo">Inactivos</option>-->
+<!--              </select>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <div class="d-flex justify-content-end">-->
+<!--            <button type="button" class="btn btn-primary" (click)="aplicarFiltros()">-->
+<!--              <i class="fa-solid fa-filter me-1"></i>Aplicar filtros-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <!-- Indicador de filtros activos -->
+      <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mt-2"
+           *ngIf="hayFiltrosActivos">
+        <div>
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i>
+          <strong>Filtros activos:</strong> {{textoFiltrosActivos}}
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-info" (click)="limpiarFiltros()">
+          <i class="fa-solid fa-times me-1"></i>Limpiar
+        </button>
+      </div>
+
+      <!-- Spinner de carga -->
+      <div *ngIf="cargando" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando datos, por favor espere...</p>
+      </div>
+
+      <!-- Tabla de usuarios con los roles actuales -->
+<!--      <div class="table-responsive" *ngIf="!cargando">-->
+<!--        <table id="tablaPrincipal" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"-->
+<!--               *ngIf="listaUsuarios.length"-->
+<!--               class="table table-striped table-hover align-middle border-top">-->
+<!--          <thead class="table-light">-->
+<!--          <tr>-->
+<!--            <th>Usuario</th>-->
+<!--            <th>Nombre completo</th>-->
+<!--            <th>C.I.</th>-->
+<!--            <th>Rol actual</th>-->
+<!--            <th>Estado</th>-->
+<!--            <th class="text-center">Acciones</th>-->
+<!--          </tr>-->
+<!--          </thead>-->
+<!--          <tbody>-->
+<!--          <tr *ngFor="let usuario of listaUsuarios">-->
+<!--            <td>-->
+<!--              <div class="d-flex align-items-center">-->
+<!--                <div class="avatar me-2">-->
+<!--                    <span class="avatar-initial rounded-circle bg-label-primary">-->
+<!--                      {{usuario.aut_us_nombres.substring(0, 1)}}{{usuario.aut_us_paterno.substring(0, 1)}}-->
+<!--                    </span>-->
+<!--                </div>-->
+<!--                <span>{{usuario.aut_us_usuario}}</span>-->
+<!--              </div>-->
+<!--            </td>-->
+<!--            <td>{{usuario.aut_us_nombres}} {{usuario.aut_us_paterno}} {{usuario.aut_us_materno}}</td>-->
+<!--            <td>{{usuario.aut_us_ci}}</td>-->
+<!--            <td>-->
+<!--              <span class="badge bg-label-primary">{{usuario.rol}}</span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <span class="badge bg-label-success" *ngIf="usuario.aut_us_estado === 1">Activo</span>-->
+<!--              <span class="badge bg-label-warning" *ngIf="usuario.aut_us_estado !== 1">Inactivo</span>-->
+<!--            </td>-->
+<!--            <td class="text-center">-->
+<!--              <button class="btn btn-sm btn-icon btn-outline-primary me-1"-->
+<!--                      (click)="abrirModalAsignarRol(usuario)"-->
+<!--                      [disabled]="usuario.aut_us_estado !== 1"-->
+<!--                      title="Asignar rol">-->
+<!--                <i class="fa-solid fa-user-gear"></i>-->
+<!--              </button>-->
+<!--              <button class="btn btn-sm btn-icon btn-outline-info"-->
+<!--                      (click)="verHistorialRolesUsuario(usuario.aut_id_usuario)"-->
+<!--                      title="Ver historial de roles">-->
+<!--                <i class="fa-solid fa-clock-rotate-left"></i>-->
+<!--              </button>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--          </tbody>-->
+<!--        </table>-->
+
+<!--        &lt;!&ndash; Mensaje cuando no hay datos &ndash;&gt;-->
+<!--        <div class="text-center p-4" *ngIf="!listaUsuarios.length">-->
+<!--          <i class="fa-solid fa-database text-muted mb-2" style="font-size: 2rem;"></i>-->
+<!--          <p class="mb-0">No se encontraron registros</p>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <!-- Tabla con DataTable directive correctamente implementado -->
+
+      <!-- Barra de búsqueda super simple -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar usuario..."
+              [(ngModel)]="textoFiltro"
+            >
+            <button class="btn btn-primary" (click)="buscarUsuarios()">
+              <i class="fa-solid fa-search me-1"></i>Buscar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end">
+          <div class="btn-group">
+            <button class="btn btn-outline-primary" (click)="togglePanelFiltros()">
+              <i class="fa-solid fa-sliders me-1"></i>Filtros avanzados
+            </button>
+            <button class="btn btn-outline-success" (click)="abrirModalAsignacionMasiva()">
+              <i class="fa-solid fa-users-rectangle me-1"></i>Asignación masiva
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de filtros super simple -->
+      <div class="card shadow-sm mb-4" id="panelFiltros" style="display: none;">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0"><i class="fa-solid fa-filter me-2"></i>Filtros avanzados</h6>
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limpiarFiltros()">
+              <i class="fa-solid fa-eraser me-1"></i>Limpiar filtros
+            </button>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Buscar por texto</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nombre, CI o usuario"
+                  [(ngModel)]="textoFiltro"
+                >
+              </div>
+              <small class="text-muted">Busca en nombre, apellidos, CI y usuario</small>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Filtrar por rol</label>
+              <select class="form-select" [(ngModel)]="rolFiltro">
+                <option value="">Todos los roles</option>
+                <option *ngFor="let rol of filtrosDisponibles.roles" [value]="rol">{{rol}}</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Estado</label>
+              <select class="form-select" [(ngModel)]="estadoFiltro">
+                <option value="">Todos</option>
+                <option value="activo">Activos</option>
+                <option value="inactivo">Inactivos</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" (click)="aplicarFiltros()">
+              <i class="fa-solid fa-filter me-1"></i>Aplicar filtros
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla simple sin DataTables -->
+      <div class="table-responsive" *ngIf="!cargando">
+        <table class="table table-striped table-hover align-middle border-top" *ngIf="listaUsuariosFiltrada.length">
+          <thead class="table-light">
+          <tr>
+            <th>Usuario</th>
+            <th>Nombre completo</th>
+            <th>C.I.</th>
+            <th>Rol actual</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let usuario of listaUsuariosFiltrada">
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="avatar me-2">
+              <span class="avatar-initial rounded-circle bg-label-primary">
+                {{usuario.aut_us_nombres.substring(0, 1)}}{{usuario.aut_us_paterno.substring(0, 1)}}
+              </span>
+                </div>
+                <span>{{usuario.aut_us_usuario}}</span>
+              </div>
+            </td>
+            <td>{{usuario.aut_us_nombres}} {{usuario.aut_us_paterno}} {{usuario.aut_us_materno}}</td>
+            <td>{{usuario.aut_us_ci}}</td>
+            <td>
+              <span class="badge bg-label-primary">{{usuario.rol}}</span>
+            </td>
+            <td>
+              <span class="badge bg-label-success" *ngIf="usuario.aut_us_estado === 1">Activo</span>
+              <span class="badge bg-label-warning" *ngIf="usuario.aut_us_estado !== 1">Inactivo</span>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-icon btn-outline-primary me-1"
+                      (click)="abrirModalAsignarRol(usuario)"
+                      [disabled]="usuario.aut_us_estado !== 1"
+                      title="Asignar rol">
+                <i class="fa-solid fa-user-gear"></i>
+              </button>
+              <button class="btn btn-sm btn-icon btn-outline-info"
+                      (click)="verHistorialRolesUsuario(usuario.aut_id_usuario)"
+                      title="Ver historial de roles">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <!-- Mensaje cuando no hay datos -->
+        <div class="text-center p-4" *ngIf="!listaUsuariosFiltrada.length">
+          <i class="fa-solid fa-database text-muted mb-2" style="font-size: 2rem;"></i>
+          <p class="mb-0">No se encontraron registros</p>
+        </div>
+      </div>
+
+      <!-- Paginación manual simple -->
+      <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="listaUsuariosFiltrada.length > 0">
+        <div>
+          <span class="text-muted">Mostrando {{listaUsuariosFiltrada.length}} registros</span>
+        </div>
+      </div>
+
+<!--      TABLA-->
+    </div>
+  </div>
+</div>
+
+<!-- Modal para asignar roles a un solo usuario -->
+<div class="modal fade" id="modalAsignarRol" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #50744c;">
+        <h5 class="modal-title text-white">Asignar roles de Asignación a Usuario</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-4" *ngIf="usuarioSeleccionado">
+          <div class="col-md-12">
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar me-3">
+                    <span class="avatar-initial rounded-circle bg-primary text-white">
+                      {{usuarioSeleccionado.aut_us_nombres?.substring(0, 1)}}{{usuarioSeleccionado.aut_us_paterno?.substring(0, 1)}}
+                    </span>
+                  </div>
+                  <div>
+                    <h5
+                      class="mb-0">{{usuarioSeleccionado.aut_us_nombres}} {{usuarioSeleccionado.aut_us_paterno}} {{usuarioSeleccionado.aut_us_materno}}</h5>
+                    <p class="mb-0">CI: {{usuarioSeleccionado.aut_us_ci}} | Rol
+                      actual: {{usuarioSeleccionado.rol}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert para mostrar mensajes de la API -->
+        <div *ngIf="mostrarMensajeAPI"
+             class="alert"
+             [ngClass]="'alert-' + tipoMensajeAPI"
+             role="alert"
+             style="margin-top: 15px;">
+          <div class="d-flex justify-content-between align-items-center py-1">
+            <div>
+              <i class="fa-solid"
+                 [ngClass]="{
+           'fa-check-circle': tipoMensajeAPI === 'success',
+           'fa-info-circle': tipoMensajeAPI === 'info',
+           'fa-exclamation-circle': tipoMensajeAPI === 'warning',
+           'fa-times-circle': tipoMensajeAPI === 'danger'
+         }"></i>
+              <strong class="ms-2">{{tipoMensajeAPI === 'success' ? 'Éxito' : tipoMensajeAPI === 'danger' ? 'Error' : 'Información'}}:</strong>
+              <span class="ms-2">{{mensajeAPI}}</span>
+            </div>
+            <button type="button" class="btn-close" (click)="mostrarMensajeAPI = false"></button>
+          </div>
+        </div>
+
+        <!-- Roles actuales del usuario -->
+        <div class="row mb-4" *ngIf="rolesActualesUsuario && rolesActualesUsuario.length > 0">
+          <div class="col-md-12">
+            <div class="card border shadow-sm">
+              <div class="card-header">
+                <h6 class="card-title mb-0">Roles asignados actualmente</h6>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered mb-0">
+                    <thead class="table-light">
+                    <tr>
+                      <th>Rol</th>
+                      <th>Turno</th>
+                      <th>Asignado por</th>
+                      <th>Fecha</th>
+                      <th class="text-center">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let rol of rolesActualesUsuario">
+                      <td>{{rol.rol}}</td>
+                      <td>{{rol.turno}}</td>
+                      <td>{{rol.asignado_por_nombre}}</td>
+                      <td>{{rol.fecha_asignacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                      <td class="text-center">
+                        <button class="btn btn-sm btn-danger" (click)="desactivarRol(rol.id)">
+                          Desactivar
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selección de nuevo rol -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card border shadow-sm">
+              <div class="card-header">
+                <h6 class="card-title mb-0">Asignar nuevo rol</h6>
+              </div>
+              <div class="card-body">
+                <form [formGroup]="formularioRol">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label" for="rolSelect">Rol</label>
+                      <select class="form-select" id="rolSelect" formControlName="rol_id">
+                        <option value="">Seleccione un rol</option>
+                        <option *ngFor="let rol of rolesDisponibles" [value]="rol.id_rol">{{rol.rol}}</option>
+                      </select>
+                      <div class="invalid-feedback"
+                           *ngIf="formularioRol.get('rol_id')?.invalid && formularioRol.get('rol_id')?.touched">
+                        Seleccione un rol
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label" for="turnoSelect">Turno</label>
+                      <select class="form-select" id="turnoSelect" formControlName="turno">
+                        <option value="">Seleccione un turno</option>
+                        <option value="MAÑANA">Mañana</option>
+                        <option value="TARDE">Tarde</option>
+<!--                        <option value="N/A">No aplica</option>-->
+                      </select>
+                      <div class="invalid-feedback"
+                           *ngIf="formularioRol.get('turno')?.invalid && formularioRol.get('turno')?.touched">
+                        Seleccione un turno
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="formularioRol.invalid" (click)="asignarRol()">
+          <i class="fa fa-save me-1"></i> Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para asignación masiva de roles -->
+<div class="modal fade" id="modalAsignacionMasiva" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #50744c">
+        <h5 class="modal-title text-white">Roles de Asignación Masiva</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card border shadow-sm">
+              <div class="card-header">
+                <h6 class="card-title mb-0">Seleccionar rol a asignar</h6>
+              </div>
+              <div class="card-body">
+                <form [formGroup]="formularioRolMasivo">
+                  <div class="mb-3">
+                    <label class="form-label">Rol de Asignación</label>
+                    <select class="form-select" formControlName="rol_id">
+                      <option value="">Seleccione un rol</option>
+                      <option *ngFor="let rol of rolesDisponibles" [value]="rol.id_rol">{{rol.rol}}</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Turno</label>
+                    <select class="form-select" formControlName="turno">
+                      <option value="">Seleccione un turno</option>
+                      <option value="MAÑANA">Mañana</option>
+                      <option value="TARDE">Tarde</option>
+<!--                      <option value="N/A">No aplica</option>-->
+                    </select>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contador y selección mejorados -->
+          <div class="col-md-6">
+            <div class="card border shadow-sm">
+              <div class="card-header bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">
+                    <i class="fa-solid fa-users me-2"></i>
+                    Usuarios seleccionados: <span class="badge bg-primary">{{usuariosSeleccionados.length}}</span>
+                  </h6>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" (click)="seleccionarTodosUsuariosFiltrados({target: {checked: true}})">
+                      <i class="fa-solid fa-check-double me-1"></i>Seleccionar todos
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="limpiarSeleccion()" [disabled]="usuariosSeleccionados.length === 0">
+                      <i class="fa-solid fa-trash me-1"></i>Limpiar selección
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="selector-container">
+                  <div>
+                    <div class="form-check">
+                      <input type="checkbox"
+                             class="form-check-input"
+                             id="seleccionarTodos"
+                             [checked]="seleccionarTodosActivo"
+                             (change)="seleccionarTodosUsuariosFiltrados($event)">
+                      <label class="form-check-label" for="seleccionarTodos">
+                        Seleccionar todos los usuarios filtrados
+                      </label>
+                    </div>
+                    <div class="small text-muted mt-1">
+                      Mostrando {{usuariosFiltradosModal.length}} usuarios filtrados
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de filtros para el modal -->
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <div class="card border shadow-sm">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0"><i class="fa-solid fa-filter me-2"></i>Filtros</h6>
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limpiarFiltrosModal()">
+                  <i class="fa-solid fa-eraser me-1"></i>Limpiar
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4 mb-2">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+                      <input type="text" class="form-control" placeholder="Nombre, CI o usuario"
+                             [(ngModel)]="textoFiltroModal" (keyup.enter)="filtrarUsuariosModal()">
+                      <button class="btn btn-outline-primary" type="button" (click)="filtrarUsuariosModal()">
+                        Buscar
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3 mb-2">
+                    <select class="form-select form-select-sm" [(ngModel)]="rolFiltroModal"
+                            (change)="filtrarUsuariosModal()">
+                      <option value="">Todos los roles</option>
+                      <option *ngFor="let rol of filtrosDisponibles.roles" [value]="rol">{{rol}}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-3 mb-2">
+                    <select class="form-select form-select-sm" [(ngModel)]="estadoFiltroModal"
+                            (change)="filtrarUsuariosModal()">
+                      <option value="">Todos</option>
+                      <option value="activo">Activos</option>
+                      <option value="inactivo">Inactivos</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-2 mb-2">
+                    <div class="d-flex justify-content-end">
+                      <span class="badge bg-info">{{usuariosFiltradosModal.length}} resultados</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de usuarios para seleccionar -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card border shadow-sm">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0">Seleccionar usuarios</h6>
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="seleccionarTodosMasivo"
+                         (change)="seleccionarTodos($event)">
+                  <label class="form-check-label" for="seleccionarTodosMasivo">Seleccionar todos (página actual)</label>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover">
+                    <thead class="table-light">
+                    <tr>
+                      <th style="width: 50px">Sel.</th>
+                      <th>Usuario</th>
+                      <th>Nombre completo</th>
+                      <th>CI</th>
+                      <th>Rol actual</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let usuario of usuariosModalPaginados"
+                        [ngClass]="{'table-primary': usuario.seleccionado}">
+                      <td>
+                        <div class="form-check" *ngIf="usuario.aut_us_estado === 1">
+                          <input type="checkbox" class="form-check-input"
+                                 [checked]="usuario.seleccionado"
+                                 (change)="toggleSeleccionUsuario(usuario)"
+                                 [id]="'usuario-' + usuario.aut_id_usuario">
+                        </div>
+                      </td>
+                      <td>{{usuario.aut_us_usuario}}</td>
+                      <td>{{usuario.aut_us_nombres}} {{usuario.aut_us_paterno}} {{usuario.aut_us_materno}}</td>
+                      <td>{{usuario.aut_us_ci}}</td>
+                      <td>
+                        <span class="badge bg-label-primary">{{usuario.rol}}</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Paginación manual para la tabla del modal -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <div>
+                    <span class="text-muted">Mostrando {{(paginaActualModal - 1) * tamanioPaginaModal + 1}} a
+                      {{Math.min(paginaActualModal * tamanioPaginaModal, usuariosFiltradosModal.length)}}
+                      de {{usuariosFiltradosModal.length}} registros</span>
+                  </div>
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0">
+                      <!-- Botón Primera página -->
+                      <li class="page-item" [ngClass]="{'disabled': paginaActualModal === 1}">
+                        <a class="page-link" href="javascript:void(0)" (click)="cambiarPaginaModal(1)">
+                          <i class="fa-solid fa-angles-left"></i>
+                        </a>
+                      </li>
+                      <!-- Botón Anterior -->
+                      <li class="page-item" [ngClass]="{'disabled': paginaActualModal === 1}">
+                        <a class="page-link" href="javascript:void(0)"
+                           (click)="cambiarPaginaModal(paginaActualModal - 1)">
+                          <i class="fa-solid fa-angle-left"></i>
+                        </a>
+                      </li>
+                      <!-- Números de página -->
+                      <ng-container *ngFor="let pagina of numerosPaginaModal; let i = index">
+                        <!-- Mostrar solo 5 páginas alrededor de la actual para no sobrecargar la UI -->
+                        <li class="page-item" *ngIf="pagina === 1 || pagina === totalPaginasModal ||
+                                                    (pagina >= paginaActualModal - 2 && pagina <= paginaActualModal + 2)"
+                            [ngClass]="{'active': paginaActualModal === pagina}">
+                          <a class="page-link" href="javascript:void(0)"
+                             (click)="cambiarPaginaModal(pagina)">{{pagina}}</a>
+                        </li>
+                        <!-- Elipsis si hay saltos -->
+                        <li class="page-item disabled" *ngIf="(i === 0 && pagina !== 1 && paginaActualModal > 4) ||
+                                                            (i === numerosPaginaModal.length - 1 && pagina !== totalPaginasModal &&
+                                                             paginaActualModal < totalPaginasModal - 3)">
+                          <a class="page-link">...</a>
+                        </li>
+                      </ng-container>
+
+                      <!-- Botón Siguiente -->
+                      <li class="page-item" [ngClass]="{'disabled': paginaActualModal === totalPaginasModal}">
+                        <a class="page-link" href="javascript:void(0)"
+                           (click)="cambiarPaginaModal(paginaActualModal + 1)">
+                          <i class="fa-solid fa-angle-right"></i>
+                        </a>
+                      </li>
+                      <!-- Botón Última página -->
+                      <li class="page-item" [ngClass]="{'disabled': paginaActualModal === totalPaginasModal}">
+                        <a class="page-link" href="javascript:void(0)" (click)="cambiarPaginaModal(totalPaginasModal)">
+                          <i class="fa-solid fa-angles-right"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button"
+                class="btn btn-primary"
+                [disabled]="formularioRolMasivo.invalid || usuariosSeleccionados.length === 0"
+                (click)="asignarRolesMultiplesUsuarios()">
+          <i class="fa-solid fa-save me-1"></i>
+          Asignar rol a {{usuariosSeleccionados.length}} usuario(s)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notifications - asegúrate de que estas estructuras existan en tu HTML -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  <div id="toastExito" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-success text-white">
+      <i class="fa-solid fa-check-circle me-2"></i>
+      <strong class="me-auto">Éxito</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{mensajeExito}}
+    </div>
+  </div>
+
+  <div id="toastError" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-danger text-white">
+      <i class="fa-solid fa-exclamation-circle me-2"></i>
+      <strong class="me-auto">Error</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{mensajeError}}
+    </div>
+  </div>
+</div>
+
+<!-- Alerta principal fuera de modales -->
+<div *ngIf="mostrarMensajeAPIPrincipal"
+     class="alert alert-dismissible fade show"
+     [ngClass]="'alert-' + tipoMensajeAPIPrincipal"
+     role="alert"
+     style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <i class="fa-solid"
+     [ngClass]="{
+      'fa-check-circle': tipoMensajeAPIPrincipal === 'success',
+      'fa-info-circle': tipoMensajeAPIPrincipal === 'info',
+      'fa-exclamation-circle': tipoMensajeAPIPrincipal === 'warning',
+      'fa-times-circle': tipoMensajeAPIPrincipal === 'danger'
+    }"></i>
+  {{mensajeAPIPrincipal}}
+  <button type="button" class="btn-close" (click)="mostrarMensajeAPIPrincipal = false"></button>
+</div>
+
+<!--HISTORIAL-->
+
+<!-- Modal para ver historial de roles -->
+<div class="modal fade" id="modalHistorialRoles" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #50744c;">
+        <h5 class="modal-title text-white">
+          <i class="fa-solid fa-clock-rotate-left me-2"></i>
+          Historial de Roles de Asignación
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Información del usuario -->
+        <div class="row mb-4" *ngIf="usuarioHistorial">
+          <div class="col-md-12">
+            <div class="card bg-light border-0">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar me-3">
+                    <span class="avatar-initial rounded-circle bg-primary text-white">
+                      {{usuarioHistorial.aut_us_nombres?.substring(0, 1)}}{{usuarioHistorial.aut_us_paterno?.substring(0, 1)}}
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">
+                      {{usuarioHistorial.aut_us_nombres}} {{usuarioHistorial.aut_us_paterno}} {{usuarioHistorial.aut_us_materno}}
+                    </h5>
+                    <p class=" mb-0">
+                      CI: {{usuarioHistorial.aut_us_ci}} | Usuario: {{usuarioHistorial.aut_us_usuario}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spinner de carga -->
+        <div *ngIf="cargando" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2">Cargando historial, por favor espere...</p>
+        </div>
+
+        <!-- Filtros simples -->
+        <div class="row mb-3" *ngIf="!cargando && historialRolesUsuario.length > 0">
+          <div class="col-md-12">
+            <div class="card border shadow-sm">
+              <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="mostrarActivos"
+                             [(ngModel)]="filtroHistorial.mostrarActivos">
+                      <label class="form-check-label" for="mostrarActivos">
+                        Solo roles activos
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="mostrarInactivos"
+                             [(ngModel)]="filtroHistorial.mostrarInactivos">
+                      <label class="form-check-label" for="mostrarInactivos">
+                        Solo roles inactivos
+                      </label>
+                    </div>
+                  </div>
+                  <span class="badge bg-primary">{{historialRolesFiltrado.length}} registros</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de historial de roles -->
+        <div class="table-responsive" *ngIf="!cargando && historialRolesFiltrado.length > 0">
+          <table class="table table-striped table-hover align-middle border">
+            <thead class="table-light">
+            <tr>
+              <th>Rol</th>
+              <th>Descripción</th>
+              <th>Turno</th>
+              <th>Fecha asignación</th>
+              <th>Asignado por</th>
+              <th>Estado</th>
+              <th>Fecha finalización</th>
+              <th>Motivo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let historial of historialRolesFiltrado"
+                [ngClass]="{'table-success': historial.activo}">
+              <td>
+                <span class="badge bg-label-primary">{{historial.rol}}</span>
+              </td>
+              <td>{{historial.descripcion}}</td>
+              <td>{{historial.turno}}</td>
+              <td>{{historial.fecha_asignacion | date:'dd/MM/yyyy HH:mm'}}</td>
+              <td>{{historial.asignado_por_nombre}}</td>
+              <td>
+                  <span class="badge"
+                        [ngClass]="historial.activo ? 'bg-label-success' : 'bg-label-warning'">
+                    {{historial.activo ? 'Activo' : 'Inactivo'}}
+                  </span>
+              </td>
+              <td>
+                {{historial.fecha_finalizacion ? (historial.fecha_finalizacion | date:'dd/MM/yyyy HH:mm') : 'N/A'}}
+              </td>
+              <td>{{historial.motivo_cambio || 'N/A'}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mensaje cuando no hay historial -->
+        <div class="text-center p-4" *ngIf="!cargando && historialRolesFiltrado.length === 0">
+          <i class="fa-solid fa-history text-muted mb-2" style="font-size: 2rem;"></i>
+          <p class="mb-0">No se encontró historial de roles para este usuario</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

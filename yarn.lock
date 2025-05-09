@@ -1843,7 +1843,7 @@
     "@types/d3-transition" "*"
     "@types/d3-zoom" "*"
 
-"@types/datatables.net@^1.12.0":
+"@types/datatables.net@^1.12.3":
   version "1.12.3"
   resolved "https://registry.npmjs.org/@types/datatables.net/-/datatables.net-1.12.3.tgz"
   integrity sha512-6Vguiqfey9UMweEJDrfi3K6PCizqAfVm8eW8oeFQPc7l/Pq/LjHmiBb5uu1nSWo8XE85yfjXFxcCHf3r2JmAMA==
@@ -1907,7 +1907,7 @@
   resolved "https://registry.npmjs.org/@types/jasmine/-/jasmine-4.3.6.tgz"
   integrity sha512-3N0FpQTeiWjm+Oo1WUYWguUS7E6JLceiGTriFrG8k5PU7zRLJCzLcWURU3wjMbZGS//a2/LgjsnO3QxIlwxt9g==
 
-"@types/jquery@*", "@types/jquery@^3.5.29":
+"@types/jquery@*", "@types/jquery@^3.5.32":
   version "3.5.32"
   resolved "https://registry.npmjs.org/@types/jquery/-/jquery-3.5.32.tgz"
   integrity sha512-b9Xbf4CkMqS02YH8zACqN1xzdxc3cO735Qe5AbSUFmyOiaWAbcpqh9Wna+Uk0vgACvoQHpWDg2rGdHkYPLmCiQ==

@@ -230,8 +230,6 @@ export class AppMainComponent implements OnInit, OnDestroy {
   }
 
   subMenuSeleccionado(item) {
-    // console.log(item.path);
-
     this.router.navigate([item.path]);
     this.mostrarMenuBarraLateral(false);
   }
@@ -239,23 +237,18 @@ export class AppMainComponent implements OnInit, OnDestroy {
   modificarVisibilidadMenus() {
     this.visibilidadMenus = !this.visibilidadMenus;
   }
-
-  /* layout-menu-fixed layout-menu-collapsed*/
-
   cerrarSesion() {
-    // console.log('cerrarSesion');
-
     this.serviceService
       .get(`/login/logout/${localStorage.getItem('id_usuario')}`)
       .subscribe((res: any) => {
         localStorage.clear();
-        Swal.fire({
-          title: res.title,
-          icon: 'info',
-          html: res.text,
-          timer: 2500,
-          showConfirmButton: false,
-        });
+        // Swal.fire({
+        //   title: res.title,
+        //   icon: 'info',
+        //   html: res.text,
+        //   timer: 2500,
+        //   showConfirmButton: false,
+        // });
         this.router.navigate(['login']);
       });
   }

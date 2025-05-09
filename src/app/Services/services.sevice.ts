@@ -1,10 +1,10 @@
-import { Injectable, NgZone } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { tap, map, catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import {Injectable, NgZone} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {tap, map, catchError} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {Observable, of} from 'rxjs';
 
-  import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 
 // import { Usuario } from '../models/usuario.model';
 import Swal from 'sweetalert2';
@@ -13,17 +13,19 @@ const apiUrl = environment.base_url;
 const protocol = window.location.protocol.replace(':', '');
 const PATERN_HOST = protocol === 'https' ? /(https:\/\/|www\.)\S+/i : /(http:\/\/|www\.)\S+/i;
 const URL_SERVICIOS = environment.base_url;
+
 @Injectable({
   providedIn: 'root'
 })
 export class ServicesService {
 
   public auth2: any;
+
   // public usuario: Usuario;
 
   constructor(public http: HttpClient,
-    public router: Router,
-    public ngZone: NgZone) {
+              public router: Router,
+              public ngZone: NgZone) {
 
     //this.googleInit();
   }
@@ -32,8 +34,6 @@ export class ServicesService {
   // getFiles(): Observable<string[]> {
   //     return this.http.get<string[]>(`${FILE_URL}/contrato/anexos`);
   // }
-
-
 
 
   headers: HttpHeaders = new HttpHeaders({
@@ -58,11 +58,11 @@ export class ServicesService {
     return this.http.post(`${URL_SERVICIOS}/login/signin`, loginAuth);
   }
 
-  usuario_list(usuario_list: object): Observable <any> {
+  usuario_list(usuario_list: object): Observable<any> {
     return this.http.get(`${URL_SERVICIOS}/user/getListado`, usuario_list);
   }
 
-  getDatosRep(): Observable <any>{
+  getDatosRep(): Observable<any> {
     return this.http.get(`${URL_SERVICIOS}/nacional/getDatosRep`);
   }
 
@@ -85,8 +85,9 @@ export class ServicesService {
   //   return this.http.post(`${URL_SERVICIOS}/nacional/getSubmit`, arraySubmit);
   // }
   getPdf(): Observable<Blob> {
-    return this.http.get(`${URL_SERVICIOS}/contrato/anexos`, { responseType: 'blob' });
+    return this.http.get(`${URL_SERVICIOS}/contrato/anexos`, {responseType: 'blob'});
   }
+
   // getPosition(): Promise<any> {
   //   return new Promise((resolve, reject) => {
   //     navigator.geolocation.getCurrentPosition(resp => {
@@ -103,11 +104,11 @@ export class ServicesService {
   }
 
 
-
   get(url, id = '') {
     // console.log('metodo---get : ' + url);
     return this._http('get', url, id);
   }
+
   get2(url, id = '') {
     return this.http.get(url);
   }
@@ -135,7 +136,7 @@ export class ServicesService {
       'Authorization': `Bearer ${this.token.replace('\"', '').replace('\"', '')}`
     });
 
-    return this.http.get(urls, { headers, responseType: "blob" });
+    return this.http.get(urls, {headers, responseType: "blob"});
 
   }
 
@@ -150,7 +151,7 @@ export class ServicesService {
         for (var i = 0; i < len; i++) {
           view[i] = binary.charCodeAt(i);
         }
-        blob = new Blob([view], { type: mimetype });
+        blob = new Blob([view], {type: mimetype});
       }
       var url = URL.createObjectURL(blob);
 
@@ -162,16 +163,16 @@ export class ServicesService {
       // var configuracion_ventana = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
       // const top = window.top.outerHeight / 2 + window.top.screenY - ( h / 2);
       // const left = window.top.outerWidth / 2 + window.top.screenX - ( w / 2);
-     // var myWin = window.open(url);
-     // setTimeout(function(){ myWin.document.title = 'my new title'; }, 1000);
+      // var myWin = window.open(url);
+      // setTimeout(function(){ myWin.document.title = 'my new title'; }, 1000);
 
       /* Con previsualizacion*/
       if (conPrevisualizacion) {
         let file = 'data:application/pdf;base64'
         let prntWin = window.open();
         prntWin.document.write("<html><head><title>" + nombreArchivo + "</title></head><body>"
-            + '<iframe width="100%" height="100%" src="'+ url + '" '
-            + 'type="application/pdf" ></body></html>');
+          + '<iframe width="100%" height="100%" src="' + url + '" '
+          + 'type="application/pdf" ></body></html>');
         prntWin.document.close();
       } else {
         var downloadLink = document.createElement("a");
@@ -192,7 +193,7 @@ export class ServicesService {
     const downloadLink = document.createElement("a");
     const fileName = nombreArchivo + ".pdf";
     downloadLink.href = linkSource;
-    downloadLink.target   = '_blank';
+    downloadLink.target = '_blank';
     downloadLink.download = fileName;
     document.body.appendChild(downloadLink);
     //downloadLink.setAttribute('target', '_blank');
@@ -205,7 +206,7 @@ export class ServicesService {
       id = `/${id}`;
     }
 
-    return PATERN_HOST.test(url) ? (url + id) :  apiUrl + url + id;
+    return PATERN_HOST.test(url) ? (url + id) : apiUrl + url + id;
     /// return  url + id;
   }
 
@@ -262,21 +263,29 @@ export class ServicesService {
         });
       } else if (error.status === 412) {
         Swal.fire({
-         position: 'top-end',
-         icon: 'error',
-         title: error.error.message || error.error.mensaje,
-         showConfirmButton: false,
-         timer: 3000
-       });
-     } else if (error.status === 500 || error.status === 403) {
-         Swal.fire({
           position: 'top-end',
           icon: 'error',
-          title: "Permiso denegado",
+          title: error.error.message || error.error.mensaje,
           showConfirmButton: false,
           timer: 3000
         });
-        this.router.navigateByUrl('logout');
+      } else if (error.status === 500 || error.status === 403) {
+        /*
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: error.error.message,
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        // Regarcar la pagina
+        this.router.navigateByUrl('logout').then(() => {
+          setTimeout(() => {
+            window.location.reload()
+          }, 2500);
+        });
+*/
       } else if (error.status === 400) {
         Swal.fire({
           position: 'center',
@@ -285,9 +294,8 @@ export class ServicesService {
           showConfirmButton: false,
           timer: 3000
         });
-       // this.router.navigateByUrl('');
-      }
-      else if (error.message === 'Network Error') {
+        // this.router.navigateByUrl('');
+      } else if (error.message === 'Network Error') {
         Swal.fire('Error', 'connection', 'error');
       } else {
         Swal.fire(error.message, 'error');
@@ -296,7 +304,6 @@ export class ServicesService {
       Swal.fire('Error', 'error desconocido', 'error');
     }
   }
-
 
 
   _http(method, url, data) {
@@ -323,37 +330,36 @@ export class ServicesService {
 
     // Set token in headers
     if (this.token) {
-      setting.headers = { 'Authorization': `Bearer ${this.token.replace('\"', '').replace('\"', '')}` };
+      setting.headers = {'Authorization': `Bearer ${this.token.replace('\"', '').replace('\"', '')}`};
     }
 
     if (method === 'get') {
 
       return this.http.get(url, setting)
         .pipe(
-
           catchError(error => {
             this.handlingErrors(error)
             return of([]);
           })
-          );
-        }
-        if (method === 'post') {
+        );
+    }
+    if (method === 'post') {
 
-          return this.http.post(url, data, setting)
-          .pipe(
-        catchError(error =>
-          this.handlingErrors(error),
+      return this.http.post(url, data, setting)
+        .pipe(
+          catchError(error =>
+            this.handlingErrors(error),
           )
-          );
-        }
-        if (method === 'put') {
+        );
+    }
+    if (method === 'put') {
 
-          return this.http.put(url, data, setting)
-          .pipe(
-        catchError(error =>
-          this.handlingErrors(error),
-        )
-      );
+      return this.http.put(url, data, setting)
+        .pipe(
+          catchError(error =>
+            this.handlingErrors(error),
+          )
+        );
     }
     if (method === 'patch') {
       return this.http.patch(url, data, setting);
@@ -368,10 +374,10 @@ export class ServicesService {
 
       let httpOptions = {
         headers: new HttpHeaders({
-          'Content-Type':  'application/json',
+          'Content-Type': 'application/json',
           "Access-Control-Allow-Origin": "*",
 
-        } ),responseType: 'text' as 'json'
+        }), responseType: 'text' as 'json'
       };
 
       return this.http.get(url, httpOptions);
@@ -379,11 +385,11 @@ export class ServicesService {
 
   }
 
-  exportHTML(contenido, tituloDocumento){
-    var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
-         "xmlns:w='urn:schemas-microsoft-com:office:word' "+
-         "xmlns='http://www.w3.org/TR/REC-html40'>"+
-         `<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title>
+  exportHTML(contenido, tituloDocumento) {
+    var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+      "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+      "xmlns='http://www.w3.org/TR/REC-html40'>" +
+      `<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title>
          <style>
          <!-- /* Style Definitions */
          p.MsoHeader, li.MsoHeader, div.MsoHeader{
@@ -437,7 +443,7 @@ export class ServicesService {
 
     var footer = "</body></html>";
 
-    var sourceHTML = header+'<div class="Section1">'+contenido+"</div>" + footer;
+    var sourceHTML = header + '<div class="Section1">' + contenido + "</div>" + footer;
 
     var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
     var fileDownload = document.createElement("a");
@@ -446,6 +452,6 @@ export class ServicesService {
     fileDownload.download = tituloDocumento + '.doc';
     fileDownload.click();
     document.body.removeChild(fileDownload);
- }
+  }
 
 }
