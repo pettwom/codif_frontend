@@ -21,6 +21,7 @@ export class CatalogosComponent implements OnInit {
   //? variables
   cuest_select: any;
   cat_select: any;
+  clas_select: any;
   option_cat: any;
   table_datos: any = [''];
   dtOptions: any = {};
@@ -42,6 +43,7 @@ export class CatalogosComponent implements OnInit {
     codigo: any;
     descripcion: any;
     tipo: string;
+    categoria: string;
   };
 
   //CORRECTOR
@@ -53,6 +55,8 @@ export class CatalogosComponent implements OnInit {
   idCorrector: any;
   tituloHeader: any;
   resDatosCorrectorEditar: any;
+  option_clas: any;
+  categoria: any;
 
   constructor(
     private servicesService: ServicesService,
@@ -133,16 +137,21 @@ export class CatalogosComponent implements OnInit {
     };
     this.cuest_select = '';
     this.cat_select = '';
+    this.clas_select = '';
     this.table_datos = [''];
     //corrector
     this.listCorrector = [''];
+    this.getClasificador();
     this.getCorrector();
   }
-  adicionar() {
+
+  adicionar(categoria) {
+    this.categoria = categoria;
     this.display = true;
     this.tipo = 'new';
     this.titulo = 'Adicionar Catalogo';
   }
+
   getCatalogo(): void {
     console.log(this.cuest_select, ' cuest select');
 
@@ -151,6 +160,23 @@ export class CatalogosComponent implements OnInit {
       .subscribe((res: any) => {
         this.option_cat = res.data;
         console.log(this.option_cat, 'option_cat');
+      });
+  }
+  getClasificador(): void {
+    this.servicesService
+      .get(`/diccionario/getclasificador`)
+      .subscribe((res: any) => {
+
+        this.option_clas = res.data;
+        console.log(this.option_clas, 'option_cat');
+      });
+  }
+  getDatosClasificador(){
+    this.table_datos = [''];
+    this.servicesService
+      .get(`/diccionario/getDatosClasificador/${this.clas_select}`)
+      .subscribe((res: any) => {
+        this.table_datos = res.data;
       });
   }
   getDatos() {
@@ -198,6 +224,7 @@ export class CatalogosComponent implements OnInit {
                 codigo: this.codigo,
                 descripcion: this.descripcion,
                 tipo: 'new',
+                categoria: this.categoria
               };
 
               this.servicesService
