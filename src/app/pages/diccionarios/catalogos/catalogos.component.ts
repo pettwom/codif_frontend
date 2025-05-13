@@ -16,9 +16,9 @@ import { LanguageApp } from 'src/app/interfaces/datatablesLanguage';
   templateUrl: './catalogos.component.html',
   styleUrls: ['./catalogos.component.css'],
 })
-
 export class CatalogosComponent implements OnInit {
   //? variables
+  isDisabled: boolean = true;
   cuest_select: any;
   cat_select: any;
   clas_select: any;
@@ -44,6 +44,8 @@ export class CatalogosComponent implements OnInit {
     descripcion: any;
     tipo: string;
     categoria: string;
+    dataCat: string;
+    categoria_select: string;
   };
 
   //CORRECTOR
@@ -57,6 +59,11 @@ export class CatalogosComponent implements OnInit {
   resDatosCorrectorEditar: any;
   option_clas: any;
   categoria: any;
+  clasificador: any;
+  catalogo: any;
+  categoria_selec: any;
+  categorias: any;
+  datosCategoria: any;
 
   constructor(
     private servicesService: ServicesService,
@@ -146,10 +153,32 @@ export class CatalogosComponent implements OnInit {
   }
 
   adicionar(categoria) {
+    this.clasificador = '';
+    this.categorias = '';
     this.categoria = categoria;
-    this.display = true;
-    this.tipo = 'new';
-    this.titulo = 'Adicionar Catalogo';
+    if (this.categoria == 'class') {
+      this.display = true;
+      this.tipo = 'new';
+      this.titulo = 'Adicionar Clasificador';
+      this.clasificador = document.getElementById('clas_select');
+      this.categoria_selec = this.clasificador.options[
+        this.clasificador.selectedIndex
+      ].innerText
+        .split('▶')[1]
+        .trim();
+      this.datosCategoria = this.clas_select;
+    } else {
+      this.display = true;
+      this.tipo = 'new';
+      this.titulo = 'Adicionar Catalogo';
+      this.categorias = document.getElementById('cat_select');
+      this.categoria_selec = this.categorias.options[
+        this.categorias.selectedIndex
+      ].innerText
+        .split('▶')[1]
+        .trim();
+      this.datosCategoria = this.cat_select;
+    }
   }
 
   getCatalogo(): void {
@@ -166,16 +195,16 @@ export class CatalogosComponent implements OnInit {
     this.servicesService
       .get(`/diccionario/getclasificador`)
       .subscribe((res: any) => {
-
         this.option_clas = res.data;
         console.log(this.option_clas, 'option_cat');
       });
   }
-  getDatosClasificador(){
+  getDatosClasificador() {
     this.table_datos = [''];
     this.servicesService
       .get(`/diccionario/getDatosClasificador/${this.clas_select}`)
       .subscribe((res: any) => {
+        this.isDisabled = false;
         this.table_datos = res.data;
       });
   }
@@ -190,7 +219,7 @@ export class CatalogosComponent implements OnInit {
   almacenar() {
     if (this.codigo == null && this.descripcion == null) {
       this.display = false;
-      console.log(this.display);
+      console.log(this.categoria);
 
       Swal.fire({
         title: 'Error!',
@@ -224,23 +253,21 @@ export class CatalogosComponent implements OnInit {
                 codigo: this.codigo,
                 descripcion: this.descripcion,
                 tipo: 'new',
-                categoria: this.categoria
+                categoria: this.categoria,
+                dataCat: this.datosCategoria ? this.datosCategoria : '',
+                categoria_select: this.categoria_selec,
               };
 
               this.servicesService
                 .post(`/diccionario/registerCatalogo`, this.body)
                 .subscribe((res: any) => {
                   this.display = false;
-                  this.getDatos();
+                  this.getDatosClasificador();
                   Swal.fire({
                     title: res.title,
                     text: res.message,
                     icon: res.icon,
                     showConfirmButton: true,
-                  }).then((r) => {
-                    if (r.isConfirmed) {
-                      this.getDatos();
-                    }
                   });
                 });
               break;
@@ -263,30 +290,48 @@ export class CatalogosComponent implements OnInit {
                     timer: 2500,
                   });
                 });
+              break;
           }
         }
       });
     }
-    this.getDatos();
+    // this.getDatos();
   }
   cancelar() {
     this.display = false;
   }
-  editar(cod) {
+  editar(cod, tipo) {
     this.id_catalogo = cod;
     this.tipo = 'edit';
     this.display = true;
     this.titulo = 'Editar Catalogo';
-    this.servicesService
-      .get(`/diccionario/getDatosCatalogo/${cod}`)
-      .subscribe((res: any) => {
-        console.log(res.data);
 
+    if (tipo == 'cat') {
+      this.categorias = document.getElementById('cat_select');
+      this.categoria_selec = this.categorias.options[
+        this.categorias.selectedIndex
+      ].innerText
+        .split('▶')[1]
+        .trim();
+      this.datosCategoria = this.cat_select;
+    } else {
+      this.clasificador = document.getElementById('clas_select');
+      this.categoria_selec = this.clasificador.options[
+        this.clasificador.selectedIndex
+      ].innerText
+        .split('▶')[1]
+        .trim();
+      this.datosCategoria = this.clas_select;
+    }
+    this.servicesService
+      .get(`/diccionario/getDatosCatalogo/${cod}/${tipo}`)
+      .subscribe((res: any) => {
+        console.log(res, 'editar');
         this.codigo = res.data[0].codigo;
         this.descripcion = res.data[0].descripcion;
       });
   }
-  eliminarRegistro(cod) {
+  eliminarRegistro(cod, tipo) {
     Swal.fire({
       title: '¿Estás seguro de eliminar este registro?',
       text: 'Esto eliminará permanentemente el registro.',
@@ -299,8 +344,13 @@ export class CatalogosComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.servicesService
-          .put(`/diccionario/deleteRegister/`, { cod: cod })
+          .put(`/diccionario/deleteRegister/`, { cod: cod, tipo: tipo })
           .subscribe((res: any) => {
+            if (tipo == 'cat') {
+              this.getDatos();
+            } else {
+              this.getDatosClasificador();
+            }
             Swal.fire({
               title: 'Registro eliminado!',
               text: 'El registro ha sido eliminado con éxito.',
@@ -308,7 +358,6 @@ export class CatalogosComponent implements OnInit {
               showConfirmButton: false,
               timer: 2500,
             });
-            this.getDatos();
           });
       }
     });
@@ -343,7 +392,7 @@ export class CatalogosComponent implements OnInit {
         ids: id,
         corregidas: this.textCorregida,
         erradas: this.textErrada,
-        tipo: tipo?tipo:''
+        tipo: tipo ? tipo : '',
       })
       .subscribe((res: any) => {
         if (res.success == true) {
@@ -398,7 +447,7 @@ export class CatalogosComponent implements OnInit {
       });
     }
   }
-  addModelCorrector(){
+  addModelCorrector() {
     this.tipo = 'new';
     this.tituloHeader = 'Adicionar Corrección';
     this.displayCorrector = true;
@@ -415,22 +464,22 @@ export class CatalogosComponent implements OnInit {
       confirmButtonColor: '#e04440',
     }).then((res) => {
       if (res.isConfirmed) {
-        try{
-        this.servicesService
-          .post(`/diccionario/addCorrector`, {
-            corregidas: this.textCorregida,
-            erradas: this.textErrada,
-          })
-          .subscribe((res: any) => {
-            Swal.fire({
-              title: res.title,
-              icon: res.icon,
-              text: res.message,
-              timer: 2500,
-              showConfirmButton: false,
+        try {
+          this.servicesService
+            .post(`/diccionario/addCorrector`, {
+              corregidas: this.textCorregida,
+              erradas: this.textErrada,
+            })
+            .subscribe((res: any) => {
+              Swal.fire({
+                title: res.title,
+                icon: res.icon,
+                text: res.message,
+                timer: 2500,
+                showConfirmButton: false,
+              });
             });
-          });
-        }catch(e){
+        } catch (e) {
           Swal.fire({
             title: 'Error',
             icon: 'error',
