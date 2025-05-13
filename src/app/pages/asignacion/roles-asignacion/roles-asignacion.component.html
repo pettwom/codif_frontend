@@ -190,9 +190,9 @@
         </div>
         <div class="col-md-6 d-flex justify-content-end">
           <div class="btn-group">
-            <button class="btn btn-outline-primary" (click)="togglePanelFiltros()">
-              <i class="fa-solid fa-sliders me-1"></i>Filtros avanzados
-            </button>
+<!--            <button class="btn btn-outline-primary" (click)="togglePanelFiltros()">-->
+<!--              <i class="fa-solid fa-sliders me-1"></i>Filtros avanzados-->
+<!--            </button>-->
             <button class="btn btn-outline-success" (click)="abrirModalAsignacionMasiva()">
               <i class="fa-solid fa-users-rectangle me-1"></i>Asignación masiva
             </button>
@@ -260,6 +260,9 @@
             <th>Nombre completo</th>
             <th>C.I.</th>
             <th>Rol actual</th>
+            <th>Turno</th>
+            <th>Asignado Por</th>
+            <th>Asignado</th>
             <th>Estado</th>
             <th class="text-center">Acciones</th>
           </tr>
@@ -281,6 +284,19 @@
             <td>
               <span class="badge bg-label-primary">{{usuario.rol}}</span>
             </td>
+            <td>{{usuario.turno}}</td>
+            <td>
+              <span class="badge bg-label-dribbble">
+                <span *ngIf="usuario.asignador_nombre?.trim()">
+                  {{ usuario.asignador_nombre }}, {{ usuario.asignador_rol }}
+                </span>
+              </span>
+            </td>
+            <td>
+              <span class="badge bg-label-info" *ngIf="usuario.esta_asignado === true">SI - {{usuario.codigo_rol}}</span>
+              <span class="badge bg-label-warning" *ngIf="usuario.esta_asignado === false">NO</span>
+            </td>
+
             <td>
               <span class="badge bg-label-success" *ngIf="usuario.aut_us_estado === 1">Activo</span>
               <span class="badge bg-label-warning" *ngIf="usuario.aut_us_estado !== 1">Inactivo</span>
@@ -552,6 +568,9 @@
             <div class="card border shadow-sm">
               <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0"><i class="fa-solid fa-filter me-2"></i>Filtros</h6>
+<!--                <button type="button" class="btn btn-sm btn-outline-primary" (click)="filtrarSoloNoAsignados()">-->
+<!--                  <i class="fa-solid fa-user-times me-1"></i>Solo No Asignados-->
+<!--                </button>-->
                 <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limpiarFiltrosModal()">
                   <i class="fa-solid fa-eraser me-1"></i>Limpiar
                 </button>
@@ -569,13 +588,13 @@
                     </div>
                   </div>
 
-                  <div class="col-md-3 mb-2">
-                    <select class="form-select form-select-sm" [(ngModel)]="rolFiltroModal"
-                            (change)="filtrarUsuariosModal()">
-                      <option value="">Todos los roles</option>
-                      <option *ngFor="let rol of filtrosDisponibles.roles" [value]="rol">{{rol}}</option>
-                    </select>
-                  </div>
+<!--                  <div class="col-md-3 mb-2">-->
+<!--                    <select class="form-select form-select-sm" [(ngModel)]="rolFiltroModal"-->
+<!--                            (change)="filtrarUsuariosModal()">-->
+<!--                      <option value="">Todos los roles</option>-->
+<!--                      <option *ngFor="let rol of filtrosDisponibles.roles" [value]="rol">{{rol}}</option>-->
+<!--                    </select>-->
+<!--                  </div>-->
 
                   <div class="col-md-3 mb-2">
                     <select class="form-select form-select-sm" [(ngModel)]="estadoFiltroModal"
@@ -619,6 +638,7 @@
                       <th>Nombre completo</th>
                       <th>CI</th>
                       <th>Rol actual</th>
+                      <th>Asignado</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -637,6 +657,10 @@
                       <td>{{usuario.aut_us_ci}}</td>
                       <td>
                         <span class="badge bg-label-primary">{{usuario.rol}}</span>
+                      </td>
+                      <td>
+                        <span class="badge bg-label-info" *ngIf="usuario.esta_asignado === true">SI - {{usuario.codigo_rol}}</span>
+                        <span class="badge bg-label-warning" *ngIf="usuario.esta_asignado === false">NO</span>
                       </td>
                     </tr>
                     </tbody>

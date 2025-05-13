@@ -221,20 +221,16 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destruir$))
       .subscribe({
         next: (res: any) => {
-          // Guardar lista original
           this.listaUsuarios = (res.roles || []).map(usuario => ({
             ...usuario,
             seleccionado: false
           }));
 
-          // Inicializar lista filtrada con todos los usuarios
           this.listaUsuariosFiltrada = [...this.listaUsuarios];
 
-          // Guardar lista completa para otros usos
           this.usuariosTotal = [...this.listaUsuarios];
           this.usuariosFiltradosModal = [...this.listaUsuarios];
 
-          // Inicializar filtros disponibles
           this.inicializarFiltros();
 
           this.cargando = false;
@@ -298,6 +294,11 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: any) => {
           this.rolesDisponibles = res.roles || [];
+          if (this.rolesDisponibles.length === 1) {
+            this.formularioRol.patchValue({
+              rol_id: this.rolesDisponibles[0].id_rol
+            });
+          }
         },
         error: (err) => {
           console.error('Error al cargar roles del sistema:', err);
@@ -314,7 +315,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           this.rolesActualesUsuario = res.asignacionesActuales || [];
         },
         error: (err) => {
-          console.error('Error al cargar roles del usuario:', err);
           this.mostrarError('No se pudieron cargar los roles actuales del usuario.');
         }
       });
@@ -324,44 +324,51 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
     this.usuarioSeleccionado = usuario;
     this.formularioRol.reset();
 
-    // Resetear mensajes de la API
     this.mostrarMensajeAPI = false;
 
-    // Cargar roles actuales del usuario
     this.cargarRolesActualesUsuario(usuario.aut_id_usuario);
 
     this.modalAsignarRol.show();
+
+    setTimeout(() => {
+      if (this.rolesDisponibles.length === 1) {
+        this.formularioRol.patchValue({
+          rol_id: this.rolesDisponibles[0].id_rol
+        });
+      }
+    }, 100);
   }
 
   abrirModalAsignacionMasiva(): void {
     this.usuariosSeleccionados = [];
     this.formularioRolMasivo.reset();
 
-    // Desmarcar todos los usuarios
     this.listaUsuarios.forEach(usuario => usuario.seleccionado = false);
-
-    // Resetear filtros del modal
     this.textoFiltroModal = '';
     this.rolFiltroModal = '';
-    this.estadoFiltroModal = 'activo'; // Por defecto mostrar solo activos
+    this.estadoFiltroModal = 'activo';
 
-    // Inicializar filtrado
-    this.usuariosFiltradosModal = [...this.listaUsuarios].filter(u => u.aut_us_estado === 1);
-
-    // Inicializar también los usuarios filtrados para la selección múltiple
+    // this.usuariosFiltradosModal = [...this.listaUsuarios].filter(u => u.aut_us_estado === 1);
+    this.usuariosFiltradosModal = [...this.listaUsuarios].filter(u =>
+      u.aut_us_estado === 1 && u.esta_asignado === false
+    );
     this.usuariosFiltrados = [...this.usuariosFiltradosModal];
 
-    // Inicializar paginación
     this.paginaActualModal = 1;
     this.actualizarUsuariosModalPaginados();
-
-    // Resetear el estado "seleccionar todos"
     this.seleccionarTodosActivo = false;
-
     this.modalAsignacionMasiva.show();
+
+    setTimeout(() => {
+      if (this.rolesDisponibles.length === 1) {
+        this.formularioRolMasivo.patchValue({
+          rol_id: this.rolesDisponibles[0].id_rol,
+          // turno: 'MAÑANA'
+        });
+      }
+    }, 100);
   }
 
-  // winter
   asignarRol(): void {
     if (this.formularioRol.invalid || !this.usuarioSeleccionado) {
       return;
@@ -383,132 +390,147 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const payload = {
-      usuario_id: this.usuarioSeleccionado.aut_id_usuario,
-      roles: [{
-        rol_id: rolId,
-        turno: datosFormulario.turno
-      }]
-    };
-
+    let payload = {};
     this.cargando = true;
     this.mostrarMensajeAPI = false; // Ocultar mensaje anterior
-
-    console.log("Payload Asignar", payload);
 
     let endpoint = '';
 
     switch (this.rolUsuarioActual) {
       case 'ADMINISTRADOR':
         endpoint = '/roles/asignar';
+        payload = {
+          usuario_id: this.usuarioSeleccionado.aut_id_usuario,
+          roles: [{
+            rol_id: rolId,
+            turno: datosFormulario.turno
+          }]
+        };
         break;
-      case 'ESPECIALISTA':
-        endpoint = '/especialista/roles/asignar';
-        break;
-      case 'JEFE DE TURNO':
-        endpoint = '/jefatura/roles/asignar';
-        break;
-      case 'SUPERVISOR':
-        endpoint = '/supervisor/roles/asignar';
-        break;
+      // case 'ESPECIALISTA':
+      //   endpoint = '/especialista/roles/asignar';
+      //   break;
+      // case 'JEFE DE TURNO':
+      //   endpoint = '/jefatura/roles/asignar';
+      //   break;
+      // case 'SUPERVISOR':
+      //   endpoint = '/supervisor/roles/asignar';
+      //   break;
       default:
-        console.warn('Rol no reconocido, usando endpoint de administrador por defecto');
-        endpoint = '/roles/asignar';
+        endpoint = '/jerarquia/roles/asignar';
+        payload = {
+          usuario_id: this.usuarioSeleccionado.aut_id_usuario,
+          rol_id: rolId,
+          turno: datosFormulario.turno
+        };
     }
-
+    console.log("Payload asignar", payload);
     console.log(`Usando endpoint: ${endpoint} para rol: ${this.rolUsuarioActual}`);
 
     this.servicesService.post(endpoint, payload)
       .pipe(takeUntil(this.destruir$))
       .subscribe({
         next: (res: any) => {
-          // Capturar el mensaje de la respuesta
           this.mensajeAPI = res.message || 'Rol asignado correctamente';
           this.tipoMensajeAPI = 'success';
           this.mostrarMensajeAPI = true;
-
-          console.log('Mensaje de la API:', this.mensajeAPI);
-
-          // Recargar roles actuales para actualizar la tabla dentro del modal
           this.cargarRolesActualesUsuario(this.usuarioSeleccionado.aut_id_usuario);
 
-          // Resetear formulario para asignar otro rol fácilmente
+          this.cargarListaUsuarios();
           this.formularioRol.reset();
 
           this.cargando = false;
         },
         error: (err) => {
-          console.error('Error al asignar 2025 rol:', err);
-
-          // Capturar el mensaje de error
-          this.mensajeAPI = err.error?.message || 'Error al asignar rol';
+          this.mensajeAPI = err.error?.message || `El usuario ${this.usuarioSeleccionado.aut_us_usuario} no esta asignado, favor de completar la Asignación con el Administrador. `;
           this.tipoMensajeAPI = 'danger';
           this.mostrarMensajeAPI = true;
 
-          // this.cargando = false;
+          this.cargando = false;
         }
       });
   }
 
   desactivarRol(asignacionId: number): void {
-    // Cerrar el modal principal primero
+    // Cerrar el modal principal 1ro
     this.modalAsignarRol.hide();
 
-    // Pequeño retraso para asegurar que el primer modal se ha cerrado
     setTimeout(() => {
       Swal.fire({
         title: '¿Está seguro?',
         text: 'Se desactivará este rol para el usuario',
         icon: 'warning',
+        input: 'text',
+        inputPlaceholder: 'Ingrese el motivo de la desactivación',
+        inputAttributes: {
+          autocomplete: 'off'
+        },
         showCancelButton: true,
         confirmButtonText: 'Sí, desactivar',
         cancelButtonText: 'Cancelar',
-        // Ajustar z-index para que aparezca sobre otros modales
+        inputValidator: (value) => {
+          if (!value) {
+            return 'Por favor ingrese un motivo para la desactivación';
+          }
+          return null;
+        },
         customClass: {
-          container: 'swal-container-higher-z-index'
-        }
+          container: 'swal-container-higher-z-index',
+          popup: 'swal-wide',
+          input: 'swal2-input',
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-outline-secondary'
+        },
+        width: '32em',
+        heightAuto: true,
+        grow: 'row'
       }).then((result) => {
         if (result.isConfirmed) {
-          // Proceder con la desactivación
           const payload = {
             asignacion_id: asignacionId,
-            motivo_cambio: 'Desactivación manual'
+            motivo_cambio: result.value
           };
 
+          let endPointURL = '';
+
+          switch (this.rolUsuarioActual) {
+            case 'ADMINISTRADOR':
+              endPointURL = '/roles/desactivar';
+              break;
+            default:
+              endPointURL = '/jerarquia/roles/desactivar';
+          }
+
           this.cargando = true;
-          this.servicesService.post('/roles/desactivar', payload)
+          this.servicesService.post(endPointURL, payload)
             .pipe(takeUntil(this.destruir$))
             .subscribe({
               next: (res: any) => {
-                // Mostrar mensaje fuera del modal
+                // Mensaje fuera del modal
                 this.mensajeAPIPrincipal = res.message || 'Rol desactivado correctamente';
                 this.tipoMensajeAPIPrincipal = 'success';
                 this.mostrarMensajeAPIPrincipal = true;
 
-                // Auto-ocultar después de unos segundos
                 setTimeout(() => {
                   this.mostrarMensajeAPIPrincipal = false;
                 }, 5000);
 
-                // Recargar la lista de usuarios para actualizar la UI
-                // this.cargarListaUsuarios();
+                this.cargarListaUsuarios();
+                this.cargarRolesActualesUsuario(this.usuarioSeleccionado.aut_id_usuario);
                 this.cargando = false;
               },
               error: (err) => {
-                console.error('Error al desactivar rol:', err);
                 this.mostrarError(err.error?.message || 'Error al desactivar rol');
                 this.cargando = false;
 
-                // Volver a abrir el modal principal si hay error
                 this.abrirModalAsignarRol(this.usuarioSeleccionado);
               }
             });
         } else {
-          // Si el usuario cancela, volvemos a abrir el modal principal
           this.abrirModalAsignarRol(this.usuarioSeleccionado);
         }
       });
-    }, 300); // Pequeño retraso para asegurar una transición suave
+    }, 300); 
   }
 
   // Método para seleccionar/deseleccionar todos en la tabla principal
@@ -684,7 +706,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
 
   // Método procesarAsignacionMasiva revisado y completo
   procesarAsignacionMasiva(rolId: number, turno: string): void {
-    // Verificar que haya usuarios seleccionados
     if (this.usuariosSeleccionados.length === 0) {
       this.mostrarError("Por favor, seleccione al menos un usuario para asignar el rol");
       return;
@@ -709,25 +730,41 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
     const usuariosSeleccionadosCopia = [...this.usuariosSeleccionados];
     const totalUsuariosSeleccionados = usuariosSeleccionadosCopia.length;
 
+    // Winter
     // Array para almacenar todas las promesas de asignación
     const promesasAsignacion = usuariosSeleccionadosCopia.map(usuario => {
-      const payload = {
-        usuario_id: usuario.aut_id_usuario,
-        roles: [{
-          rol_id: rolId,
-          turno: turno
-        }]
-      };
+
+      let body = {};
+      let endPointUrl = '';
+
+      switch (this.rolUsuarioActual) {
+        case 'ADMINISTRADOR':
+          endPointUrl = '/roles/asignar';
+          body = {
+            usuario_id: usuario.aut_id_usuario,
+            roles: [{
+              rol_id: rolId,
+              turno: turno
+            }]
+          };
+          break;
+        default:
+          endPointUrl = '/jerarquia/roles/asignar';
+          body = {
+            usuario_id: usuario.aut_id_usuario,
+            rol_id: rolId,
+            turno: turno
+          };
+      }
 
       return new Promise((resolve, reject) => {
-        this.servicesService.post('/roles/asignar', payload).subscribe({
+        this.servicesService.post(endPointUrl, body).subscribe({
           next: (res) => resolve({ usuario, resultado: res }),
           error: (err) => reject({ usuario, error: err })
         });
       });
     });
 
-    // Ejecutar todas las asignaciones y manejar resultados
     Promise.allSettled(promesasAsignacion)
       .then(resultados => {
         // Contar resultados exitosos y fallidos
@@ -746,10 +783,10 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           // Recargar datos con resaltado para mostrar los cambios
           this.recargarTablaConResaltado(usuariosSeleccionadosCopia);
           this.limpiarSeleccion();
+          this.cargarListaUsuarios();
 
           // Después de que los datos se han recargado, mostrar las notificaciones
           setTimeout(() => {
-            // 1. Mostrar notificación principal con SweetAlert2
             Swal.fire({
               title: '¡Asignación completada!',
               html: `
@@ -762,7 +799,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
             `,
               icon: 'success',
               confirmButtonText: 'Entendido',
-              timer: 5000, // Se cerrará automáticamente después de 5 segundos
+              timer: 5000, //
               timerProgressBar: true,
               customClass: {
                 popup: 'swal-wide',
@@ -771,25 +808,21 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
               }
             });
 
-            // 2. Mostrar notificación flotante más persistente
             this.mostrarNotificacionFlotante(
               `<strong>¡Éxito!</strong> Se asignó el rol "${rolNombre}" con turno ${turno} a ${exitosos} de ${totalUsuariosSeleccionados} usuario(s).`,
               'success',
-              8000 // Se mostrará por 8 segundos
+              5000
             );
 
-            // 3. También actualizar el mensaje en la UI principal para referencia
             this.mensajeAPIPrincipal = `Se asignó el rol "${rolNombre}" con turno ${turno} a ${exitosos} de ${totalUsuariosSeleccionados} usuario(s).`;
             this.tipoMensajeAPIPrincipal = 'success';
             this.mostrarMensajeAPIPrincipal = true;
 
-            // Auto-ocultar el mensaje persistente después de un tiempo más largo
             setTimeout(() => {
               this.mostrarMensajeAPIPrincipal = false;
-            }, 10000); // 10 segundos
-          }, 1000); // Esperar 1 segundo después de que la tabla se ha recargado
+            }, 8000);
+          }, 1000);
         } else {
-          // Mostrar mensaje de error
           Swal.fire({
             title: 'Error en la asignación',
             html: `
@@ -806,23 +839,17 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
             }
           });
 
-          // Mostrar notificación de error flotante
           this.mostrarNotificacionFlotante(
             `<strong>Error:</strong> No se pudo completar la asignación de roles.`,
             'danger',
             8000
           );
         }
-
         this.cargando = false;
       })
       .catch(err => {
-        // Cerrar el indicador de progreso
         Swal.close();
 
-        console.error('Error en asignación masiva:', err);
-
-        // Mostrar error con SweetAlert2
         Swal.fire({
           title: 'Error inesperado',
           html: `
@@ -839,7 +866,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           }
         });
 
-        // Mostrar notificación flotante de error
         this.mostrarNotificacionFlotante(
           `<strong>Error crítico:</strong> Falló el proceso de asignación de roles.`,
           'danger',
@@ -995,92 +1021,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
     };
   }
 
-  aplicarFiltrosV1(): void {
-    const textoFiltro = this.textoFiltro?.toLowerCase() || '';
-    const rolFiltro = this.rolFiltro || '';
-    const estadoFiltro = this.estadoFiltro || '';
-
-    // Aplicar filtros a la lista completa
-    this.usuariosFiltrados = this.listaUsuarios.filter(usuario => {
-      // Filtro por texto
-      const coincideTexto = !textoFiltro ||
-        usuario.aut_us_usuario?.toLowerCase().includes(textoFiltro) ||
-        usuario.aut_us_nombres?.toLowerCase().includes(textoFiltro) ||
-        usuario.aut_us_paterno?.toLowerCase().includes(textoFiltro) ||
-        usuario.aut_us_materno?.toLowerCase().includes(textoFiltro) ||
-        usuario.aut_us_ci?.includes(textoFiltro);
-
-      // Filtro por rol
-      const coincideRol = !rolFiltro || usuario.rol === rolFiltro;
-
-      // Filtro por estado
-      const coincideEstado = !estadoFiltro ||
-        (estadoFiltro === 'activo' && usuario.aut_us_estado === 1) ||
-        (estadoFiltro === 'inactivo' && usuario.aut_us_estado !== 1);
-
-      return coincideTexto && coincideRol && coincideEstado;
-    });
-
-    // Actualizar DataTable si está inicializada
-    setTimeout(() => {
-      const tabla = $('#tablaPrincipal').DataTable();
-      if (tabla) {
-        tabla.draw();
-      }
-    }, 100);
-  }
-
-  // VEAMOS
-  aplicarFiltrosV2(): void {
-    if (!this.dtInstance) {
-      console.warn('DataTable no está inicializada aún');
-      setTimeout(() => this.aplicarFiltros(), 100);
-      return;
-    }
-
-    // Limpiamos cualquier filtro previo
-    this.dtInstance.search('').columns().search('').draw();
-
-    // 1. Primero, aplicamos el filtrado a nivel de JavaScript
-    const textoFiltro = this.textoFiltro?.toLowerCase() || '';
-    const rolFiltro = this.rolFiltro || '';
-    const estadoFiltro = this.estadoFiltro || '';
-
-    // 2. Crear el filtro personalizado para DataTables
-    $.fn.dataTable.ext.search.pop(); // Eliminar filtros anteriores
-
-    if (textoFiltro || rolFiltro || estadoFiltro) {
-      $.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
-        const row = this.listaUsuarios[dataIndex];
-        if (!row) return false;
-
-        // Filtro por texto
-        const coincideTexto = !textoFiltro ||
-          row.aut_us_usuario?.toLowerCase().includes(textoFiltro) ||
-          row.aut_us_nombres?.toLowerCase().includes(textoFiltro) ||
-          row.aut_us_paterno?.toLowerCase().includes(textoFiltro) ||
-          row.aut_us_materno?.toLowerCase().includes(textoFiltro) ||
-          row.aut_us_ci?.includes(textoFiltro);
-
-        // Filtro por rol
-        const coincideRol = !rolFiltro || row.rol === rolFiltro;
-
-        // Filtro por estado
-        const coincideEstado = !estadoFiltro ||
-          (estadoFiltro === 'activo' && row.aut_us_estado === 1) ||
-          (estadoFiltro === 'inactivo' && row.aut_us_estado !== 1);
-
-        return coincideTexto && coincideRol && coincideEstado;
-      });
-    }
-
-    // 3. Aplicar filtro y redibujar tabla
-    this.dtInstance.draw();
-
-    // 4. Actualizar lista de usuarios filtrados para otras funciones
-    this.actualizarUsuariosFiltrados();
-  }
-
   aplicarFiltros(): void {
     const textoFiltro = this.textoFiltro?.toLowerCase() || '';
     const rolFiltro = this.rolFiltro || '';
@@ -1159,9 +1099,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
 
   // Métodos para filtros en el modal
   filtrarUsuariosModal(): void {
-    // Primero filtramos los usuarios
     const usuariosFiltrados = this.listaUsuarios.filter(usuario => {
-      // Filtro por texto
       const coincideTexto = !this.textoFiltroModal ||
         usuario.aut_us_usuario.toLowerCase().includes(this.textoFiltroModal.toLowerCase()) ||
         usuario.aut_us_nombres.toLowerCase().includes(this.textoFiltroModal.toLowerCase()) ||
@@ -1169,28 +1107,37 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
         usuario.aut_us_materno.toLowerCase().includes(this.textoFiltroModal.toLowerCase()) ||
         usuario.aut_us_ci.includes(this.textoFiltroModal);
 
-      // Filtro por rol
       const coincideRol = !this.rolFiltroModal || usuario.rol === this.rolFiltroModal;
 
-      // Filtro por estado
       const coincideEstado = !this.estadoFiltroModal ||
         (this.estadoFiltroModal === 'activo' && usuario.aut_us_estado === 1) ||
-        (this.estadoFiltroModal === 'inactivo' && usuario.aut_us_estado !== 1);
+        (this.estadoFiltroModal === 'inactivo' && usuario.esta_asignado !== 1);
 
-      return coincideTexto && coincideRol && coincideEstado;
+      const noAsignado = usuario.esta_asignado === false;
+
+      return coincideTexto && coincideRol && coincideEstado && noAsignado;
     });
 
-    // Actualizamos listas y datos
     this.usuariosFiltradosModal = usuariosFiltrados;
 
-    // También actualizamos la lista de usuarios filtrados para el componente de selección
     this.usuariosFiltrados = [...usuariosFiltrados];
 
-    // Reseteamos la paginación
     this.paginaActualModal = 1;
     this.actualizarUsuariosModalPaginados();
 
-    // Actualizar el estado de selección
+    this.actualizarEstadoSeleccionarTodos();
+  }
+
+  filtrarSoloNoAsignados(): void {
+    this.usuariosFiltradosModal = [...this.listaUsuarios].filter(usuario =>
+      usuario.aut_us_estado === 1 && usuario.esta_asignado === false
+    );
+
+    this.usuariosFiltrados = [...this.usuariosFiltradosModal];
+
+    this.paginaActualModal = 1;
+    this.actualizarUsuariosModalPaginados();
+
     this.actualizarEstadoSeleccionarTodos();
   }
 
@@ -1325,7 +1272,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
     this.formularioRol.reset();
     this.formularioRolMasivo.reset();
 
-    // Recargar datos
     this.cargarListaUsuarios();
 
     // Asegurarse de restablecer el estado de carga
@@ -1386,7 +1332,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
   // Método para iniciar la asignación masiva
   asignarRolesMultiplesUsuarios(): void {
     if (this.formularioRolMasivo.invalid || this.usuariosSeleccionados.length === 0) {
-      // Mostrar mensaje de error
       this.mostrarError("Por favor, seleccione un rol y al menos un usuario");
       return;
     }
@@ -1396,12 +1341,9 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
     const rolNombre = this.obtenerNombreRol(rolId);
     const turno = datosFormulario.turno;
 
-    // Cerrar el modal primero para evitar problemas de z-index
     this.modalAsignacionMasiva.hide();
 
-    // Pequeño retraso para asegurar que el modal se haya cerrado completamente
     setTimeout(() => {
-      // Mostrar confirmación usando SweetAlert2 con z-index más alto
       Swal.fire({
         title: 'Confirmar asignación masiva',
         html: `
@@ -1421,14 +1363,12 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          // Proceder con la asignación
           this.procesarAsignacionMasiva(rolId, turno);
         } else {
-          // Si cancela, volver a abrir el modal de asignación masiva
           this.modalAsignacionMasiva.show();
         }
       });
-    }, 300); // Retraso para asegurar la transición
+    }, 300);
   }
 
   verHistorialRolesUsuario(usuarioId: number): void {
@@ -1452,16 +1392,18 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: any) => {
           // Combinar asignaciones actuales y el historial
-          const asignacionesActuales = res.asignacionesActuales || [];
+          // const asignacionesActuales = res.asignacionesActuales || [];
           const historialAsignaciones = res.historialAsignaciones || [];
 
           // Procesamos todas las asignaciones para agregar una propiedad 'activo'
-          const todas = [...asignacionesActuales, ...historialAsignaciones].map(asignacion => ({
+          const todas = [
+            //...asignacionesActuales,
+            ...historialAsignaciones
+          ].map(asignacion => ({
             ...asignacion,
             activo: asignacion.fecha_finalizacion === null
           }));
 
-          // Eliminamos posibles duplicados (basándonos en el ID)
           const idsUnicos = new Set();
           this.historialRolesUsuario = todas.filter(asig => {
             if (idsUnicos.has(asig.id)) {
@@ -1471,7 +1413,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
             return true;
           });
 
-          // Ordenamos por fecha de asignación (más reciente primero)
           this.historialRolesUsuario.sort((a, b) =>
             new Date(b.fecha_asignacion).getTime() - new Date(a.fecha_asignacion).getTime()
           );
@@ -1489,7 +1430,6 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
   // Getter para filtrar el historial según las opciones seleccionadas
   get historialRolesFiltrado(): any[] {
     if (!this.filtroHistorial.mostrarActivos && !this.filtroHistorial.mostrarInactivos) {
-      // Si no hay filtros activos, mostrar todo
       return this.historialRolesUsuario;
     }
 
