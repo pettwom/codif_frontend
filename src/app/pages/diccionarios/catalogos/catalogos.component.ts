@@ -32,6 +32,7 @@ export class CatalogosComponent implements OnInit {
   id_catalogo: any;
   tipo: string;
   body_edit: {
+    categoria: string;
     cuestionario: any;
     codigo: any;
     descripcion: any;
@@ -64,6 +65,7 @@ export class CatalogosComponent implements OnInit {
   categoria_selec: any;
   categorias: any;
   datosCategoria: any;
+  tipos: any;
 
   constructor(
     private servicesService: ServicesService,
@@ -146,6 +148,8 @@ export class CatalogosComponent implements OnInit {
     this.cat_select = '';
     this.clas_select = '';
     this.table_datos = [''];
+    this.codigo = '';
+    this.descripcion= '';
     //corrector
     this.listCorrector = [''];
     this.getClasificador();
@@ -206,13 +210,16 @@ export class CatalogosComponent implements OnInit {
       .subscribe((res: any) => {
         this.isDisabled = false;
         this.table_datos = res.data;
+        console.log(this.table_datos, 'table_datos');
       });
   }
   getDatos() {
     this.table_datos = [''];
+    console.log(this.table_datos, 'getdatos');
     this.servicesService
       .get(`/diccionario/getDatos/${this.cuest_select}/${this.cat_select}`)
       .subscribe((res: any) => {
+
         this.table_datos = res.data;
       });
   }
@@ -262,7 +269,11 @@ export class CatalogosComponent implements OnInit {
                 .post(`/diccionario/registerCatalogo`, this.body)
                 .subscribe((res: any) => {
                   this.display = false;
-                  this.getDatosClasificador();
+                  if (this.categoria == 'cat') {
+                    this.getDatos();
+                  } else {
+                    this.getDatosClasificador();
+                  }
                   Swal.fire({
                     title: res.title,
                     text: res.message,
@@ -273,15 +284,21 @@ export class CatalogosComponent implements OnInit {
               break;
             case 'edit':
               this.body_edit = {
+                categoria: this.categoria,
                 cuestionario: this.cuest_select,
                 codigo: this.codigo,
                 descripcion: this.descripcion,
                 id_catalogo: this.id_catalogo,
               };
+
               this.servicesService
                 .put(`/diccionario/editRegister`, this.body_edit)
                 .subscribe((res: any) => {
-                  this.getDatos();
+                  if (this.categoria == 'cat') {
+                    this.getDatos();
+                  } else {
+                    this.getDatosClasificador();
+                  }
                   Swal.fire({
                     title: res.title,
                     text: res.message,
@@ -300,19 +317,21 @@ export class CatalogosComponent implements OnInit {
   cancelar() {
     this.display = false;
   }
-  editar(cod, tipo) {
+  editar(cod, tipos) {
     this.id_catalogo = cod;
     this.tipo = 'edit';
+    this.categoria = tipos;
     this.display = true;
     this.titulo = 'Editar Catalogo';
 
-    if (tipo == 'cat') {
+    if (tipos == 'cat') {
       this.categorias = document.getElementById('cat_select');
       this.categoria_selec = this.categorias.options[
-        this.categorias.selectedIndex
+      this.categorias.selectedIndex
       ].innerText
-        .split('▶')[1]
-        .trim();
+      .split('▶')[1]
+      .trim();
+      console.log(this.categoria_selec, 'catalogos');
       this.datosCategoria = this.cat_select;
     } else {
       this.clasificador = document.getElementById('clas_select');
@@ -324,13 +343,14 @@ export class CatalogosComponent implements OnInit {
       this.datosCategoria = this.clas_select;
     }
     this.servicesService
-      .get(`/diccionario/getDatosCatalogo/${cod}/${tipo}`)
+      .get(`/diccionario/getDatosCatalogo/${cod}/${tipos}`)
       .subscribe((res: any) => {
         console.log(res, 'editar');
         this.codigo = res.data[0].codigo;
         this.descripcion = res.data[0].descripcion;
       });
   }
+
   eliminarRegistro(cod, tipo) {
     Swal.fire({
       title: '¿Estás seguro de eliminar este registro?',

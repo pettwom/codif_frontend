@@ -15,17 +15,21 @@
 }
 .nav-item{
   background-color: #fff;
-  border-radius: 10px; 
-  margin: 20px 5px;
+  border-radius: 10px;
+  margin: 30px 5px;
 }
 .nav-item:hover{
-  box-shadow: 3px 1px 1px rgba(0,0,0,.1); 
+  box-shadow: 3px 1px 1px rgba(0,0,0,.1);
   background-color:rgb(138, 182, 65,.2);
+
   transition: all .5s ease-out;
 }
 .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-link.active:focus .nav-item:focus{
-  box-shadow: 3px 1px 1px rgba(0,0,0,.1); 
-  border-radius: 10px; 
+  box-shadow: 3px 1px 1px rgba(0,0,0,.1);
+  border-radius: 10px;
   background-color:rgb(138, 182, 65,.2);
   transition: all .5s ease-out;
+}
+.nav-align-left > .nav .nav-item, .nav-align-left > div > .nav .nav-item{
+  margin: 10px 0!important;
 }

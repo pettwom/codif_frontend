@@ -33,11 +33,11 @@ const routes: Routes = [
       {path: 'codificacion', component: AutomaticasComponent},
       // Definir la ruta
       {path: 'asignacion', component: RolesAsignacionComponent},
+      {path: 'home', component: HomeComponent},
     ]
   },
   {path: '', component: LoginComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'home', component: HomeComponent},
   {path: 'logout', component: LogoutComponent},
   {path: 'notfound', component: AppNotfoundComponent},
   {path: '**', redirectTo: '/notfound'},
