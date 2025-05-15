@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { LanguageApp } from 'src/app/interfaces/datatablesLanguage';
+import { Component, OnInit, ViewChild } from '@angular/core';
+// import { DataTableDirective } from 'angular-datatables';
 import { ServicesService } from 'src/app/Services/services.sevice';
+import { LanguageApp } from 'src/app/interfaces/datatablesLanguage';
+import { Subject } from 'rxjs';
+import 'datatables.net';
 
 @Component({
   selector: 'app-codautomatica',
@@ -9,11 +12,13 @@ import { ServicesService } from 'src/app/Services/services.sevice';
 })
 
 export class CodautomaticaComponent implements OnInit {
+  dtOptions: any = {};
+  // dtTrigger: Subject<any> = new Subject<any>();
   resultadosFiltrados: any[] = [];
   resultadoData: any;
-  dtOptions: any = {};
+  // dtOptions: any = {};
 
-  ngOnInit(): void {
+  ngOnInit(){
     this.dtOptions = {
       paging: true,
       searching: true,
@@ -29,22 +34,22 @@ export class CodautomaticaComponent implements OnInit {
         {
           extend: 'excel',
           text: '<i class="fa-solid fa-file-excel"></i> Descargar Excel',
-          title: 'Reporte de Respuestas Códificadas automáticamente',
+          title: 'Reporte de Respuestas Codificación Automática',
           className: 'btn btn-info',
           exportOptions: {
             // Especificar las columnas que quieres exportar por índice
-            columns: [0, 1, 2, 3, 4, 5, 6,7,8,9], // Solo exportar las columnas "Nombre" (índice 0) y "Edad" (índice 1)
+            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], // Solo exportar las columnas "Nombre" (índice 0) y "Edad" (índice 1)
           },
           customize: function (xlsx) {
-            let sheet = xlsx.xl.worksheets['sheet1.xml'];
+            const sheet = xlsx.xl.worksheets['sheet1.xml'];
             // Modificar el fondo de los encabezados
             const headers = sheet
               .getElementsByTagName('row')[0]
-              .getElementsByTagName('j');
+              .getElementsByTagName('c');
             for (let i = 0; i < headers.length; i++) {
               const header = headers[i];
-              // Agregar fondo color gris claro a los encabezados
-              header.setAttribute('a', '15'); // 's' hace referencia al estilo en Excel (fondo de celda)
+
+              header.setAttribute('s', '17'); // 's' hace referencia al estilo en Excel (fondo de celda)
             }
 
             // Cambiar el tamaño de las fuentes y poner en negrita los encabezados
@@ -53,7 +58,7 @@ export class CodautomaticaComponent implements OnInit {
               const cells = row.getElementsByTagName('c');
               for (let cell of cells) {
                 const style = cell.getAttribute('a');
-                if (style && style === '30') {
+                if (style && style === '17') {
                   // Si el estilo es de los encabezados, hacemos que el texto sea negrita
                   cell.setAttribute('t', 'inlineStr');
                   const istring = document.createElement('is');
@@ -63,28 +68,15 @@ export class CodautomaticaComponent implements OnInit {
                   cell.textContent = '';
                   cell.appendChild(istring);
                   // Aplicamos estilo de texto negrita a los encabezados
-                  cell.setAttribute('s', '2'); // '2' es el estilo en Excel para texto en negrita
+                  cell.setAttribute('s', '17'); // '2' es el estilo en Excel para texto en negrita
                 }
-              }
-            }
-            // Comprobar si ya existe el filtro y agregarlo si no está presente
-            const autofilter = sheet.getElementsByTagName('autoFilter');
-            if (autofilter.length === 0) {
-              const autoFilter = document.createElement('autoFilter');
-              autoFilter.setAttribute('ref', 'A2:J2'); // Definir el rango de columnas para el filtro
-              // Asegúrate de insertarlo en la estructura correcta del XML (dentro de <worksheet>).
-              let worksheetNode = sheet.getElementsByTagName('worksheet')[0];
-
-              // Insertamos el filtro en el lugar correcto
-              if (worksheetNode) {
-                worksheetNode.appendChild(autoFilter);
               }
             }
           },
         },
       ],
     };
-    this.resultadoData= ['']
+    this.resultadoData= []
   }
 
   constructor(private servicesService: ServicesService) {}
@@ -97,4 +89,5 @@ export class CodautomaticaComponent implements OnInit {
         this.resultadoData = res.data;
       });
   }
+
 }

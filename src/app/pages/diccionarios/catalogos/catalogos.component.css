@@ -33,3 +33,4 @@
 .nav-align-left > .nav .nav-item, .nav-align-left > div > .nav .nav-item{
   margin: 10px 0!important;
 }
+div.container { max-width: 1200px }

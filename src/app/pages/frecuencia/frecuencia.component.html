@@ -22,7 +22,7 @@
             <select class="form-select" id="deptoSel" [(ngModel)]="deptoModel" (change)="getMpio()"
               aria-label="Floating label select example">
               <option value="" selected disabled>== Departamento ==</option>
-              <option *ngFor="let a of deptoOption" value="{{a.cod_depto}}">{{a.depto}}</option>
+              <option *ngFor="let a of deptoOption" value="{{a.depto}}">{{a.depto}}</option>
             </select>
             <label for="floatingSelect">Departamento</label>
           </div>
@@ -33,7 +33,7 @@
             <select class="form-select" id="mpioSel" [(ngModel)]="mpioModel" (change)="getAg()"
               aria-label="Floating label select example">
               <option value="" selected disabled>== Municipio ==</option>
-              <option *ngFor="let a of (mpioResult|| [])" value="{{a.cod_mpio}}">{{a.mpio}}</option>
+              <option *ngFor="let a of (mpioResult|| [])" value="{{a.mpio}}">{{a.mpio}}</option>
             </select>
             <label for="floatingSelect">Municipio</label>
           </div>
