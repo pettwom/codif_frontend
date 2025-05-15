@@ -18,6 +18,7 @@ import {FrecuenciaComponent} from './pages/frecuencia/frecuencia.component';
 import {AutomaticasComponent} from './pages/automaticas/automaticas.component';
 // Importar la ruta
 import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/roles-asignacion.component';
+import { CodautomaticaComponent } from './pages/codificacion/codautomatica/codautomatica.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
       // Definir la ruta
       {path: 'asignacion', component: RolesAsignacionComponent},
       {path: 'home', component: HomeComponent},
+      {path: 'automatica', component: CodautomaticaComponent},
     ]
   },
   {path: '', component: LoginComponent},

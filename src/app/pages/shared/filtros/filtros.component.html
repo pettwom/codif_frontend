@@ -1,0 +1,50 @@
+<div class="card-body">
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-floating form-floating-outline">
+        <select class="form-select" id="deptoSel" [(ngModel)]="deptoModel" (change)="getMpio()"
+          aria-label="Floating label select example">
+          <option value="" selected disabled>== Departamento ==</option>
+          <option *ngFor="let a of deptoOption" value="{{a.depto}}">{{a.depto}}</option>
+        </select>
+        <label for="floatingSelect">Departamento</label>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-floating form-floating-outline">
+        <select class="form-select" id="mpioSel" [(ngModel)]="mpioModel" (change)="getAg()"
+          aria-label="Floating label select example">
+          <option value="" selected disabled>== Municipio ==</option>
+          <option *ngFor="let a of (mpioResult|| [])" value="{{a.mpio}}">{{a.mpio}}</option>
+        </select>
+        <label for="floatingSelect">Municipio</label>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-floating form-floating-outline">
+        <select class="form-select" id="agSel" [(ngModel)]="agModel" (change)="getAe()"
+          aria-label="Floating label select example">
+          <option value="" selected disabled>== Área Agropecuaria ==</option>
+          <option *ngFor="let a of agResult" value="{{a.ag_unico}}">{{a.ag_unico}}</option>
+        </select>
+        <label for="floatingSelect">Área Agropecuaria</label>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-floating form-floating-outline">
+        <select class="form-select" id="aeSel" [(ngModel)]="aeModel" aria-label="Floating label select example">
+          <option value="" selected disabled>== Área Enumerada ==</option>
+          <option *ngFor="let a of aeResult" value="{{a.ae_unico}}">{{a.ae_unico}}</option>
+        </select>
+        <label for="floatingSelect">Área Enumerada</label>
+      </div>
+    </div>
+    <hr>
+    <button class="btn btn-success" [disabled]="disabledButton?true:false" (click)="searchFre()"> <i
+        class="fa fa-search"></i>&nbsp; Buscar</button>
+  </div>
+
+</div>

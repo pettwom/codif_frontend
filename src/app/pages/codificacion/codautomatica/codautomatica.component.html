@@ -1,0 +1,55 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3d mb-4">
+    <span class="text-muted fw-light">
+      <a href="/home">Inicio</a> / Codificacion
+    </span>
+    / Codificación Automtica
+  </h4>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Filtros Automáticos</h3>
+  </div>
+  <div class="card-body">
+    <app-filtros (filtrosAplicados)="recibirResultados($event)"> </app-filtros>
+  </div>
+</div>
+<br>
+<div class="card">
+  <div class="card-header">
+    <h3>Resultados</h3>
+  </div>
+  <div class="card-body">
+    <table datatable [dtOptions]="dtOptions" *ngIf="resultadoData.length >0" class="table table-hover table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>NRO</th>
+          <th>DEPARTAMENTO</th>
+          <th>MUNICIPIO</th>
+          <th>AG UNICO</th>
+          <th>AE UNICO</th>
+          <th>NRO PREGUNTA</th>
+          <th>RESPUESTA</th>
+          <th>RESPUESTA NORMALIZADA</th>
+          <th>CODIGO</th>
+          <th>ESTADO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of resultadoData">
+          <td>{{a.nro}}</td>
+          <td>{{a.depto}}</td>
+          <td>{{a.mpio}}</td>
+          <td>{{a.ag_unico}}</td>
+          <td>{{a.ae_unico}}</td>
+          <td>{{a.pre_numero_pregunta}}</td>
+          <td>{{a.respuesta}}</td>
+          <td>{{a.respuesta_normalizada}}</td>
+          <td>{{a.codigo_respuesta}}</td>
+          <td>{{a.estado}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

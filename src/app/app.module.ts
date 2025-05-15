@@ -39,6 +39,9 @@ import {AutomaticasComponent} from './pages/automaticas/automaticas.component';
 import {RolesComponent} from './pages/administracion/roles/roles.component';
 // Importar
 import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/roles-asignacion.component';
+import { AsistidasComponent } from './pages/codificacion/asistidas/asistidas.component';
+import { CodautomaticaComponent } from './pages/codificacion/codautomatica/codautomatica.component';
+import { FiltrosComponent } from './pages/shared/filtros/filtros.component';
 // import {TokenInterceptor} from "./interceptors/token.interceptor";
 
 @NgModule({
@@ -59,6 +62,9 @@ import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/role
     RolesComponent,
     // Declarar el componente
     RolesAsignacionComponent,
+    AsistidasComponent,
+    CodautomaticaComponent,
+    FiltrosComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,8 +79,9 @@ import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/role
     TooltipModule,
     NgxDropzoneModule,
     RouterModule.forRoot([]), // Aquí se configura el enrutamiento
-    NgMultiSelectDropDownModule.forRoot()
-  ],
+    NgMultiSelectDropDownModule.forRoot(),
+
+],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
@@ -85,6 +92,7 @@ import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/role
     },
     // { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
     ],
+  exports:[FiltrosComponent],
 
   bootstrap: [AppComponent]
 })
