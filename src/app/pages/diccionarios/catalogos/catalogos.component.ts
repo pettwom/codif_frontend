@@ -66,6 +66,9 @@ export class CatalogosComponent implements OnInit {
   categorias: any;
   datosCategoria: any;
   tipos: any;
+  tables_catalogo: boolean = false;
+  tables_clasificador: boolean = false;
+  tables_corrector: boolean = false;
 
   constructor(
     private servicesService: ServicesService,
@@ -147,9 +150,9 @@ export class CatalogosComponent implements OnInit {
     this.cuest_select = '';
     this.cat_select = '';
     this.clas_select = '';
-    this.table_datos = [''];
+    this.table_datos = [];
     this.codigo = '';
-    this.descripcion= '';
+    this.descripcion = '';
     //corrector
     this.listCorrector = [''];
     this.getClasificador();
@@ -184,10 +187,22 @@ export class CatalogosComponent implements OnInit {
       this.datosCategoria = this.cat_select;
     }
   }
+  limpiar(tipo:string) {
+  this.table_datos = [];
+
+  if (tipo === 'cat') {
+    this.cat_select = '';
+    this.tables_catalogo = false;
+  }
+
+  if (tipo === 'class') {
+    this.clas_select = '';
+    this.tables_clasificador = false;
+  }
+  }
 
   getCatalogo(): void {
     console.log(this.cuest_select, ' cuest select');
-
     this.servicesService
       .get(`/diccionario/getCatalogo/${this.cuest_select}`)
       .subscribe((res: any) => {
@@ -203,6 +218,7 @@ export class CatalogosComponent implements OnInit {
         console.log(this.option_clas, 'option_cat');
       });
   }
+
   getDatosClasificador() {
     this.table_datos = [''];
     this.servicesService
@@ -219,7 +235,6 @@ export class CatalogosComponent implements OnInit {
     this.servicesService
       .get(`/diccionario/getDatos/${this.cuest_select}/${this.cat_select}`)
       .subscribe((res: any) => {
-
         this.table_datos = res.data;
       });
   }
@@ -327,10 +342,10 @@ export class CatalogosComponent implements OnInit {
     if (tipos == 'cat') {
       this.categorias = document.getElementById('cat_select');
       this.categoria_selec = this.categorias.options[
-      this.categorias.selectedIndex
+        this.categorias.selectedIndex
       ].innerText
-      .split('▶')[1]
-      .trim();
+        .split('▶')[1]
+        .trim();
       console.log(this.categoria_selec, 'catalogos');
       this.datosCategoria = this.cat_select;
     } else {
