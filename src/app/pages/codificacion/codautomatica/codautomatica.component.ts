@@ -4,13 +4,13 @@ import { ServicesService } from 'src/app/Services/services.sevice';
 import { LanguageApp } from 'src/app/interfaces/datatablesLanguage';
 import { Subject } from 'rxjs';
 import 'datatables.net';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-codautomatica',
   templateUrl: './codautomatica.component.html',
   styleUrls: ['./codautomatica.component.css'],
 })
-
 export class CodautomaticaComponent implements OnInit {
   dtOptions: any = {};
   // dtTrigger: Subject<any> = new Subject<any>();
@@ -18,7 +18,7 @@ export class CodautomaticaComponent implements OnInit {
   resultadoData: any;
   // dtOptions: any = {};
 
-  ngOnInit(){
+  ngOnInit() {
     this.dtOptions = {
       paging: true,
       searching: true,
@@ -76,7 +76,7 @@ export class CodautomaticaComponent implements OnInit {
         },
       ],
     };
-    this.resultadoData= []
+    this.resultadoData = [];
   }
 
   constructor(private servicesService: ServicesService) {}
@@ -89,5 +89,27 @@ export class CodautomaticaComponent implements OnInit {
         this.resultadoData = res.data;
       });
   }
-
+  generar() {
+    Swal.fire({
+      title: 'Generar?',
+      icon: 'info',
+      text: 'Esta seguro de generar la Codificación',
+      confirmButtonText: 'Si, Acepto',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.servicesService
+          .get(`/frecuencia/generarAutomaticas`)
+          .subscribe((res: any) => {
+            Swal.fire({
+              title: 'Correcto',
+              icon: 'success',
+              timer: 1000,
+              showConfirmButton:false,
+              showCancelButton:false
+            });
+          });
+      }
+    });
+  }
 }
