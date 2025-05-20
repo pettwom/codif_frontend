@@ -18,8 +18,11 @@ import {FrecuenciaComponent} from './pages/frecuencia/frecuencia.component';
 import {AutomaticasComponent} from './pages/automaticas/automaticas.component';
 // Importar la ruta
 import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/roles-asignacion.component';
-import { CodautomaticaComponent } from './pages/codificacion/codautomatica/codautomatica.component';
+import {DistribucionCargaComponent} from './pages/asignacion/distribucion-carga/distribucion-carga.component';
+import {PreguntasOperadoresComponent} from './pages/asignacion/preguntas-operadores/preguntas-operadores.component';
 
+import { CodautomaticaComponent } from './pages/codificacion/codautomatica/codautomatica.component';
+import { roleGuard } from './guards/role.guard';
 const routes: Routes = [
   {
     path: 'admin', component: AppMainComponent,
@@ -32,8 +35,17 @@ const routes: Routes = [
       {path: 'clasificador', component: ClasificadoresComponent},
       {path: 'frecuencia', component: FrecuenciaComponent},
       {path: 'codificacion', component: AutomaticasComponent},
-      // Definir la ruta
-      {path: 'asignacion', component: RolesAsignacionComponent},
+      // Definir la ruta y ver las rutas permitidas
+      {
+        path: 'asignacion',
+        component: RolesAsignacionComponent,
+        canActivate: [roleGuard],
+        data: {
+          rolesPermitidos: ['ESPECIALISTA', 'JEFE DE TURNO', 'SUPERVISOR', 'ADMINISTRADOR']
+        }
+      },
+      {path: 'distribucion-carga', component: DistribucionCargaComponent, canActivate: [roleGuard], data: {rolesPermitidos: ['SUPERVISOR']}},
+      {path: 'preguntas-asignadas', component: PreguntasOperadoresComponent, canActivate: [roleGuard], data: {rolesPermitidos: ['CODIFICADOR']}},
       {path: 'home', component: HomeComponent},
       {path: 'automatica', component: CodautomaticaComponent},
     ]

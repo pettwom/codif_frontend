@@ -11,10 +11,11 @@
         <i class="fa-solid fa-users-gear me-2"></i>
         Asignación de Roles
       </h5>
-      <!--      <button class="btn btn-primary" (click)="abrirModalAsignacionMasiva()">-->
-      <!--        <i class="fa-solid fa-users-rectangle me-2"></i>-->
-      <!--        Asignación masiva-->
-      <!--      </button>-->
+      <button *ngIf="esSupervisor()" class="btn btn-primary" (click)="asignarDistribucionDeCarga()">
+        <i class="fa-solid fa fa-sitemap me-2"></i>
+        Distribución de Carga
+      </button>
+
     </div>
 
     <div class="card-body">

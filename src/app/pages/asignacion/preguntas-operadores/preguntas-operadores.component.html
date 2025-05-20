@@ -1,0 +1,173 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Inicio / Codificación</span>
+    / Mis Preguntas Asignadas
+  </h4>
+
+  <!-- Tarjeta principal -->
+  <div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center py-3">
+      <h5 class="mb-0">
+        <i class="fa-solid fa-list-check me-2"></i>
+        Preguntas Asignadas para Codificación
+      </h5>
+
+      <div class="btn-group">
+        <button class="btn btn-outline-primary" (click)="cargarPreguntasAsignadas()">
+          <i class="fa-solid fa-sync me-1"></i> Actualizar
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Spinner de carga -->
+      <div *ngIf="cargando" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando preguntas asignadas, por favor espere...</p>
+      </div>
+
+      <!-- Contenido cuando se han cargado los datos -->
+      <div *ngIf="!cargando && datosCodificacion">
+        <!-- Resumen básico -->
+        <div class="alert alert-info mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-0">{{ datosCodificacion?.data[0].titulo }}</h6>
+              <p class="mb-0">
+                <small>
+                  Secciones: <strong>{{ datosCodificacion?.data[0].secciones.length }}</strong> |
+                  Preguntas: <strong>{{ totalPreguntas }}</strong> |
+                  Total Codificaciones Asignadas: <strong>{{ totalCodificaciones }}</strong>
+                </small>
+              </p>
+            </div>
+            <div>
+              <span class="badge bg-primary">{{ seccionesFiltradas.length }} secciones</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Búsqueda simple -->
+        <div class="row mb-4">
+          <div class="col-md-8">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar sección o pregunta..."
+                [(ngModel)]="textoBusqueda"
+                (keyup.enter)="aplicarFiltros()">
+              <button class="btn btn-primary" type="button" (click)="aplicarFiltros()">
+                <i class="fa-solid fa-search me-1"></i> Buscar
+              </button>
+              <button class="btn btn-outline-secondary" type="button" (click)="limpiarFiltros()">
+                <i class="fa-solid fa-eraser"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <select class="form-select" [(ngModel)]="seccionSeleccionada" (change)="aplicarFiltros()">
+              <option value="">Todas las secciones</option>
+              <option *ngFor="let nombre of nombresSecciones" [value]="nombre">{{ nombre }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabla de secciones con preguntas integradas, desplegables -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+            <tr>
+              <th>Sección</th>
+              <th class="text-center">Preguntas</th>
+              <th class="text-center">Codificaciones</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let seccion of seccionesFiltradas">
+              <tr [ngClass]="{'table-active': seccion.id === seccionExpandidaId}">
+                <td>
+                  <strong>{{ seccion.nombre }}</strong>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-label-info">{{ seccion.preguntas ? seccion.preguntas.length : 0 }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-label-primary">{{ calcularTotalCodificacionesSeccion(seccion) }}</span>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group">
+                    <button class="btn btn-sm"
+                            [ngClass]="seccion.id === seccionExpandidaId ? 'btn-outline-danger' : 'btn-outline-info'"
+                            type="button"
+                            (click)="toggleSeccion(seccion.id)">
+                      <i class="fa-solid" [ngClass]="seccion.id === seccionExpandidaId ? 'fa-eye-slash' : 'fa-eye'"></i>
+                      &nbsp;{{ seccion.id === seccionExpandidaId ? 'Ocultar' : 'Ver Preguntas' }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Detalle de preguntas (visible cuando se expande la sección) -->
+              <tr *ngIf="seccion.id === seccionExpandidaId">
+                <td colspan="4" class="p-0">
+                  <div class="table-responsive border-top">
+                    <table class="table table-sm mb-0">
+                      <thead class="table-light">
+                      <tr>
+                        <th class="text-center">Número</th>
+                        <th>Texto de la pregunta</th>
+                        <th class="text-center">Asignadas</th>
+                        <th class="text-center">Fecha asignación</th>
+                        <th class="text-center">Supervisor</th>
+                        <th class="text-center">Turno</th>
+                        <th class="text-center">Acción</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let pregunta of seccion.preguntas">
+                        <td class="text-center">{{ pregunta.numero || 'N/A' }}</td>
+                        <td class="text-wrap">{{ pregunta.texto }}</td>
+                        <td class="text-center">
+                          <span class="badge bg-success">{{ pregunta.cantidad_asignada }}</span>
+                        </td>
+                        <td class="text-center">{{ formatearFecha(pregunta.fecha_asignacion) }}</td>
+                        <td class="text-center">{{ pregunta.supervisor || 'N/A' }}</td>
+                        <td class="text-center">{{ pregunta.rol_turno_asignacion || 'N/A' }}</td>
+                        <td class="text-center">
+<!--                          <button class="btn btn-sm btn-outline-primary" (click)="irACodificacion(pregunta)">-->
+<!--                            <i class="fa-solid fa-code"></i> Codificar-->
+<!--                          </button>-->
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mensaje cuando no hay datos -->
+        <div *ngIf="seccionesFiltradas.length === 0" class="text-center p-4">
+          <i class="fa-solid fa-inbox text-muted mb-2" style="font-size: 2rem;"></i>
+          <p class="mb-0">No tiene preguntas asignadas</p>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando hay error o no hay datos -->
+      <div *ngIf="!cargando && !datosCodificacion" class="text-center p-4">
+        <i class="fa-solid fa-triangle-exclamation text-warning mb-2" style="font-size: 2rem;"></i>
+        <p class="mb-0">No se pudieron cargar las preguntas asignadas</p>
+        <button class="btn btn-primary mt-3" (click)="cargarPreguntasAsignadas()">
+          <i class="fa-solid fa-sync me-1"></i> Reintentar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

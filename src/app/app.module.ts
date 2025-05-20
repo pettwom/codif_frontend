@@ -18,18 +18,15 @@ import {AppComponent} from './app.component';
 /************************ */
 import {HomeComponent} from './pages/home/home.component';
 import {LoginComponent} from './pages/login/login.component';
-import {environment} from 'src/environments/environment';
 
 import {ErrorInterceptor} from './Services/ErrorInterceptor';
 import {WebcamModule} from 'ngx-webcam';
 import {TooltipModule} from 'primeng/tooltip';
 import {NgMultiSelectDropDownModule} from 'ng-multiselect-dropdown';
 import {SafePipe} from './safe.pipe'; // Corregido aquí
-import {Moment} from 'moment';
 
 import {NgxDropzoneModule} from 'ngx-dropzone';
 import {NotificacionesComponent} from './pages/notificaciones/notificaciones.component';
-import {SocketService} from './Services/socket.service'; // Asegúrate de importar el servicio
 import {LoadingInterceptor} from './interceptors/loading.interceptor';
 import {CatalogosComponent} from './pages/diccionarios/catalogos/catalogos.component';
 import {CorrectoresComponent} from './pages/diccionarios/correctores/correctores.component';
@@ -42,14 +39,15 @@ import {RolesAsignacionComponent} from './pages/asignacion/roles-asignacion/role
 import { AsistidasComponent } from './pages/codificacion/asistidas/asistidas.component';
 import { CodautomaticaComponent } from './pages/codificacion/codautomatica/codautomatica.component';
 import { FiltrosComponent } from './pages/shared/filtros/filtros.component';
-// import {TokenInterceptor} from "./interceptors/token.interceptor";
+import { DistribucionCargaComponent } from './pages/asignacion/distribucion-carga/distribucion-carga.component';
+import { PreguntasOperadoresComponent } from './pages/asignacion/preguntas-operadores/preguntas-operadores.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AppMainComponent,
     AppNotfoundComponent,
-    /**************** */
+    /*****************/
     HomeComponent,
     LoginComponent,
     SafePipe,
@@ -65,6 +63,8 @@ import { FiltrosComponent } from './pages/shared/filtros/filtros.component';
     AsistidasComponent,
     CodautomaticaComponent,
     FiltrosComponent,
+    DistribucionCargaComponent,
+    PreguntasOperadoresComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,7 +90,6 @@ import { FiltrosComponent } from './pages/shared/filtros/filtros.component';
       useClass: LoadingInterceptor,
       multi: true
     },
-    // { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
     ],
   exports:[FiltrosComponent],
 

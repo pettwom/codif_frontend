@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { Router } from '@angular/router';
+
 declare var bootstrap: any;
 declare var $: any;
 
@@ -116,7 +118,8 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
 
   constructor(
     private servicesService: ServicesService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     // Inicializar formularios
     this.formularioRol = this.fb.group({
@@ -155,6 +158,24 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
     }
   }
 
+  esSupervisor(): boolean {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      try {
+        const payloadBase64 = token.split('.')[1];
+        const payloadDecoded = atob(payloadBase64);
+        const payload = JSON.parse(payloadDecoded);
+        return payload?.usuario?.tipo_usuario === 'SUPERVISOR';
+      } catch (error) {
+        console.error('Error al obtener rol del usuario:', error);
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   obtenerRolUsuarioActual(): void {
     const token = localStorage.getItem('token');
 
@@ -164,14 +185,13 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
         const payloadDecoded = atob(payloadBase64);
         const payload = JSON.parse(payloadDecoded);
         this.rolUsuarioActual = payload.usuario.tipo_usuario;
-        console.log("Payload: ", payload);
       } catch (error) {
         console.error('Error al obtener rol del usuario:', error);
         this.rolUsuarioActual = '';
       }
     }
 
-    console.log('Rol del usuario actual:', this.rolUsuarioActual);
+    // console.log('Rol del usuario actual:', this.rolUsuarioActual);
   }
 
   inicializarModales(): void {
@@ -205,7 +225,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           delay: 5000
         });
 
-        console.log('Toasts inicializados correctamente');
+        // console.log('Toasts inicializados correctamente');
       } else {
         console.error('No se pudieron encontrar los elementos de toast en el DOM');
       }
@@ -215,6 +235,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
   // Método para cargar usuarios
   cargarListaUsuarios(): void {
     this.cargando = true;
+    // CONSTANTE QUEMADA
     const nombre_corto_nivel = 'Codificación - Cod';
 
     this.servicesService.get(`/roles/usuarios/${nombre_corto_nivel}`)
@@ -241,6 +262,10 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           this.cargando = false;
         }
       });
+  }
+
+  asignarDistribucionDeCarga(): void {
+    this.router.navigate(['/admin/distribucion-carga']);
   }
 
   // Filtros
@@ -424,8 +449,8 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           turno: datosFormulario.turno
         };
     }
-    console.log("Payload asignar", payload);
-    console.log(`Usando endpoint: ${endpoint} para rol: ${this.rolUsuarioActual}`);
+    // console.log("Payload asignar", payload);
+    // console.log(`Usando endpoint: ${endpoint} para rol: ${this.rolUsuarioActual}`);
 
     this.servicesService.post(endpoint, payload)
       .pipe(takeUntil(this.destruir$))
@@ -530,7 +555,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
           this.abrirModalAsignarRol(this.usuarioSeleccionado);
         }
       });
-    }, 300); 
+    }, 300);
   }
 
   // Método para seleccionar/deseleccionar todos en la tabla principal
@@ -1177,7 +1202,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
   // Métodos para notificaciones
   mostrarExito(mensaje: string): void {
     this.mensajeExito = mensaje;
-    console.log('Mostrando mensaje de éxito:', mensaje);
+    // console.log('Mostrando mensaje de éxito:', mensaje);
 
     // Verificar si el toast está inicializado
     if (!this.toastExito) {
@@ -1210,7 +1235,7 @@ export class RolesAsignacionComponent implements OnInit, OnDestroy {
 
   mostrarError(mensaje: string): void {
     this.mensajeError = mensaje;
-    console.log('Mostrando mensaje de error:', mensaje);
+    // console.log('Mostrando mensaje de error:', mensaje);
 
     // Verificar si el toast está inicializado
     if (!this.toastError) {

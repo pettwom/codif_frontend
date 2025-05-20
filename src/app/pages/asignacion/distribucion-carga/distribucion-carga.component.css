@@ -1,0 +1,189 @@
+/* Estilos adicionales para la visualización optimizada */
+.text-wrap {
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+/* Estilo para filas activas/expandidas */
+.table-active {
+  background-color: rgba(105, 108, 255, 0.05) !important;
+}
+
+/* Estilos para filas seleccionadas */
+.table-primary {
+  background-color: rgba(105, 108, 255, 0.1) !important;
+}
+
+/* Transición suave para mostrar/ocultar preguntas */
+td div.mt-3 {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilo para las badges */
+.badge {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.badge.bg-label-primary {
+  background-color: rgba(105, 108, 255, 0.16) !important;
+  color: #696cff !important;
+}
+
+.badge.bg-label-info {
+  background-color: rgba(0, 207, 232, 0.16) !important;
+  color: #00cfe8 !important;
+}
+
+.badge.bg-label-success {
+  background-color: rgba(40, 199, 111, 0.16) !important;
+  color: #28c76f !important;
+}
+
+/* Mejorar aspecto de las tablas */
+.table th {
+  font-weight: 600;
+}
+
+.table-sm td, .table-sm th {
+  padding: 0.5rem;
+}
+
+/* Botones de acción */
+.btn-outline-info, .btn-outline-danger, .btn-outline-success {
+  transition: all 0.2s ease;
+}
+
+.btn-outline-info:hover {
+  background-color: #00cfe8;
+  color: white;
+}
+
+.btn-outline-danger:hover {
+  background-color: #ea5455;
+  color: white;
+}
+
+.btn-outline-success:hover {
+  background-color: #28c76f;
+  color: white;
+}
+
+/* Estilo para alertas */
+.alert-info {
+  background-color: rgba(0, 207, 232, 0.1);
+  border-left: 4px solid #00cfe8;
+  border-radius: 5px;
+}
+
+.alert-warning {
+  background-color: rgba(255, 159, 67, 0.1);
+  border-left: 4px solid #ff9f43;
+  border-radius: 5px;
+}
+
+/* Mejoras para responsive */
+@media (max-width: 768px) {
+  .table-responsive {
+    border: 0;
+  }
+
+  .table td, .table th {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Estilos adicionales para el modal */
+.modal-header {
+  border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Estilos para los inputs del formulario */
+.form-select:focus, .form-control:focus {
+  border-color: #696cff;
+  box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.25);
+}
+
+/* Estilos para los radio buttons */
+.form-check-input:checked {
+  background-color: #696cff;
+  border-color: #696cff;
+}
+
+/*sdsd*/
+
+/* Estilos para la tabla de distribución de carga */
+.table-sm.table-bordered {
+  font-size: 0.85rem;
+}
+
+.table-sm.table-bordered thead th,
+.table-sm.table-bordered tfoot th {
+  background-color: rgba(105, 108, 255, 0.05);
+}
+
+/* Estilo para resaltar usuarios seleccionados */
+.table tr.table-primary td {
+  background-color: rgba(105, 108, 255, 0.1) !important;
+}
+
+/* Animación para actualizaciones de la distribución */
+.table-responsive .table-sm.table-bordered {
+  transition: all 0.3s ease;
+}
+
+/* Mejoras visuales para los checkboxes */
+.form-check-input:checked {
+  background-color: #696cff;
+  border-color: #696cff;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.25);
+}
+
+/* Estilos para la información de distribución */
+.card.bg-light {
+  border-left: 4px solid #696cff;
+  transition: all 0.3s ease;
+}
+
+/* Contador de selección en el botón de confirmar */
+.btn.btn-success .badge {
+  background-color: white;
+  color: #28c76f;
+  margin-left: 5px;
+}
+
+/* Estilos para el resumen de distribución */
+.distribucion-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.1);
+}
+
+.distribucion-item:last-child {
+  border-bottom: none;
+}
+
+/* Animación para destacar cambios en la distribución */
+@keyframes highlightRow {
+  0% { background-color: rgba(40, 199, 111, 0.2); }
+  100% { background-color: transparent; }
+}
+
+.highlight-animation {
+  animation: highlightRow 1s ease;
+}

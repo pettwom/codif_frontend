@@ -1,0 +1,41 @@
+/* Estilos para filas activas/expandidas */
+.table-active {
+  background-color: rgba(105, 108, 255, 0.05) !important;
+}
+
+/* Estilos para las badges */
+.badge {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.badge.bg-label-primary {
+  background-color: rgba(105, 108, 255, 0.16) !important;
+  color: #696cff !important;
+}
+
+.badge.bg-label-info {
+  background-color: rgba(0, 207, 232, 0.16) !important;
+  color: #00cfe8 !important;
+}
+
+.badge.bg-label-success {
+  background-color: rgba(40, 199, 111, 0.16) !important;
+  color: #28c76f !important;
+}
+
+/* Transición suave para mostrar/ocultar preguntas */
+td div.mt-3 {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilos para el texto de las preguntas */
+.text-wrap {
+  white-space: normal !important;
+  word-break: break-word !important;
+}
