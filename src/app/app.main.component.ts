@@ -242,6 +242,7 @@ export class AppMainComponent implements OnInit, OnDestroy {
       .get(`/login/logout/${localStorage.getItem('id_usuario')}`)
       .subscribe((res: any) => {
         localStorage.clear();
+        // winter
         // Swal.fire({
         //   title: res.title,
         //   icon: 'info',

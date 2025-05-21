@@ -165,6 +165,8 @@ export class LoginComponent implements OnInit {
 
     this.auth.login({'login': this.form_login.value, 'navegador': this.navegador}).subscribe(
       (res: any) => {
+        // winter
+        /*
         Swal.fire({
           position: 'center',
           icon: res.icon,
@@ -172,8 +174,9 @@ export class LoginComponent implements OnInit {
           showConfirmButton: false,
           timer: 3500,
         });
+         */
 
-console.log(res.menu);
+        // console.log(res.menu);
 
         localStorage.setItem('id', JSON.stringify(res.users.id_usuario));
         localStorage.setItem('token', res.token);
@@ -204,7 +207,7 @@ console.log(res.menu);
           icon: error.error.icon,
           title: error.error.message,
           showConfirmButton: false,
-          timer: 2500,
+          timer: 3000,
         });
       }
     );
